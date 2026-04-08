@@ -1,18 +1,60 @@
 import React from 'react';
 import { motion } from 'motion/react';
 import { ArrowRight, Github, Linkedin, Facebook } from 'lucide-react';
+import ShapeGrid from './ShapeGrid';
 
 interface HeroProps {
   onViewProjects: () => void;
 }
 
 export const Hero: React.FC<HeroProps> = ({ onViewProjects }) => {
+  const [gridDirection, setGridDirection] = React.useState<'right' | 'left'>('left');
+
+  React.useEffect(() => {
+    const sequence = [
+      { direction: 'right' as const, delay: 5000 },
+      { direction: 'left' as const, delay: 6000 },
+      { direction: 'right' as const, delay: 7000 }
+    ];
+
+    let stepIndex = 0;
+    let timeoutId: number | undefined;
+
+    const runSequence = () => {
+      const step = sequence[stepIndex];
+      timeoutId = window.setTimeout(() => {
+        setGridDirection(step.direction);
+        stepIndex = (stepIndex + 1) % sequence.length;
+        runSequence();
+      }, step.delay);
+    };
+
+    runSequence();
+
+    return () => {
+      if (timeoutId !== undefined) {
+        window.clearTimeout(timeoutId);
+      }
+    };
+  }, []);
+
   return (
     <section className="relative pt-32 pb-20 lg:pt-48 lg:pb-32 overflow-hidden bg-white dark:bg-neutral-950 transition-colors duration-300">
+      <div className="absolute inset-0 z-0">
+        <ShapeGrid
+          direction={gridDirection}
+          speed={0.5}
+          borderColor="#86efac"
+          squareSize={42}
+          hoverFillColor="rgba(134, 239, 172, 0.25)"
+          className="opacity-90"
+        />
+      </div>
+
       {/* Background Accents */}
-      <div className="absolute top-0 right-0 -z-10 w-1/2 h-full bg-white dark:bg-neutral-900/20 skew-x-12 transform origin-top-right" />
+      <div className="absolute top-0 right-0 z-0 w-1/2 h-full bg-white/50 dark:bg-neutral-900/20 skew-x-12 transform origin-top-right" />
       
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <div className="max-w-3xl">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -20,12 +62,14 @@ export const Hero: React.FC<HeroProps> = ({ onViewProjects }) => {
             transition={{ duration: 0.6 }}
           >
             <div className="mb-8">
-              <img 
-                src="https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=400&h=400&fit=crop&q=80" 
-                alt="Profile" 
-                className="w-24 h-24 rounded-full border-4 border-white dark:border-neutral-800 shadow-xl object-cover"
-                referrerPolicy="no-referrer"
-              />
+              <div className="w-24 h-24 rounded-full border-4 border-black shadow-[0_10px_24px_rgba(0,0,0,0.35),inset_0_2px_2px_rgba(255,255,255,0.35),inset_0_-4px_8px_rgba(0,0,0,0.5)] overflow-hidden">
+                <img 
+                  src="https://wisenergy.site/Jholmer.png" 
+                  alt="Profile" 
+                  className="w-full h-full object-cover object-center scale-110"
+                  referrerPolicy="no-referrer"
+                />
+              </div>
             </div>
             <span className="inline-block px-3 py-1 bg-black dark:bg-white text-white dark:text-black text-[10px] font-bold uppercase tracking-[0.2em] rounded-full mb-6">
               Available for Hire

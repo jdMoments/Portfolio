@@ -40,3 +40,114 @@
     background: #404040;
   }
 }
+
+@keyframes magicBentoGlowShift {
+  0% {
+    transform: scale(1) translate3d(0, 0, 0);
+    opacity: 0.45;
+    filter: hue-rotate(0deg);
+  }
+  50% {
+    transform: scale(1.04) translate3d(-1.5%, -1%, 0);
+    opacity: 0.62;
+    filter: hue-rotate(18deg);
+  }
+  100% {
+    transform: scale(1.02) translate3d(1.2%, 1.4%, 0);
+    opacity: 0.5;
+    filter: hue-rotate(-12deg);
+  }
+}
+
+@keyframes magicBentoGridDrift {
+  0% {
+    background-position: 0 0, 0 0;
+    opacity: 0.22;
+  }
+  100% {
+    background-position: 120px 70px, -90px -55px;
+    opacity: 0.3;
+  }
+}
+
+.magic-bento-background-glow {
+  background:
+    radial-gradient(circle at 18% 16%, rgba(120, 255, 178, 0.34) 0%, rgba(120, 255, 178, 0) 38%),
+    radial-gradient(circle at 82% 24%, rgba(132, 0, 255, 0.28) 0%, rgba(132, 0, 255, 0) 44%),
+    radial-gradient(circle at 54% 80%, rgba(80, 150, 255, 0.24) 0%, rgba(80, 150, 255, 0) 42%);
+  mix-blend-mode: screen;
+  animation: magicBentoGlowShift 7s ease-in-out infinite alternate;
+}
+
+.magic-bento-background-grid {
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.08) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.08) 1px, transparent 1px);
+  background-size: 42px 42px, 42px 42px;
+  mask-image: radial-gradient(circle at center, rgba(0, 0, 0, 0.88), transparent 85%);
+  animation: magicBentoGridDrift 9s linear infinite alternate;
+}
+
+@keyframes projectCardGlowPulse {
+  0% {
+    opacity: 0.2;
+    transform: scale(1) translate3d(0, 0, 0);
+  }
+  100% {
+    opacity: 0.6;
+    transform: scale(1.08) translate3d(-1%, -1%, 0);
+  }
+}
+
+@keyframes projectCardParticles {
+  0% {
+    background-position: 0 0, 20px 10px, -10px -20px;
+    opacity: 0.15;
+  }
+  100% {
+    background-position: 80px -40px, -60px 30px, 40px 60px;
+    opacity: 0.35;
+  }
+}
+
+.project-card-magic {
+  position: relative;
+  overflow: hidden;
+}
+
+.project-card-magic::before,
+.project-card-magic::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.project-card-magic::before {
+  background:
+    radial-gradient(circle at 20% 20%, rgba(120, 255, 178, 0.35), transparent 45%),
+    radial-gradient(circle at 80% 20%, rgba(132, 0, 255, 0.3), transparent 45%),
+    radial-gradient(circle at 50% 80%, rgba(80, 150, 255, 0.25), transparent 45%);
+  mix-blend-mode: screen;
+}
+
+.project-card-magic::after {
+  background-image:
+    radial-gradient(circle, rgba(120, 255, 178, 0.7) 1px, transparent 2px),
+    radial-gradient(circle, rgba(132, 0, 255, 0.6) 1px, transparent 2px),
+    radial-gradient(circle, rgba(80, 150, 255, 0.5) 1px, transparent 2px);
+  background-size: 60px 60px, 90px 90px, 120px 120px;
+  mix-blend-mode: screen;
+}
+
+.project-card-magic:hover::before {
+  opacity: 1;
+  animation: projectCardGlowPulse 2.2s ease-in-out infinite alternate;
+}
+
+.project-card-magic:hover::after {
+  opacity: 1;
+  animation: projectCardParticles 4s linear infinite alternate;
+}

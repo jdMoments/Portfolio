@@ -5,14 +5,14 @@ import { motion, AnimatePresence } from 'motion/react';
 
 interface NavbarProps {
   activeSection: NavItem;
-  setActiveSection: (section: NavItem) => void;
+  onNavigate: (section: NavItem) => void;
   isDarkMode: boolean;
   toggleDarkMode: () => void;
 }
 
 export const Navbar: React.FC<NavbarProps> = ({ 
   activeSection, 
-  setActiveSection,
+  onNavigate,
   isDarkMode,
   toggleDarkMode
 }) => {
@@ -31,7 +31,7 @@ export const Navbar: React.FC<NavbarProps> = ({
         <div className="flex justify-between h-16 items-center">
           <div 
             className="flex items-center space-x-2 cursor-pointer"
-            onClick={() => setActiveSection('home')}
+            onClick={() => onNavigate('home')}
           >
             <Code2 className="w-8 h-8 text-black dark:text-white" />
             <span className="font-bold text-xl tracking-tight dark:text-white">DEV.PORTFOLIO</span>
@@ -42,7 +42,7 @@ export const Navbar: React.FC<NavbarProps> = ({
             {navItems.map((item) => (
               <button
                 key={item.id}
-                onClick={() => setActiveSection(item.id)}
+                onClick={() => onNavigate(item.id)}
                 className="relative px-4 py-2 text-sm font-medium transition-colors hover:text-black dark:hover:text-white group"
               >
                 <span className={`relative z-10 ${
@@ -105,7 +105,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                 <button
                   key={item.id}
                   onClick={() => {
-                    setActiveSection(item.id);
+                    onNavigate(item.id);
                     setIsOpen(false);
                   }}
                   className={`block w-full text-left px-3 py-2 rounded-md text-base font-medium ${

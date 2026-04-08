@@ -6,11 +6,14 @@ import { About } from './pages/About';
 import { Contact } from './pages/Contact';
 import { Footer } from './components/Footer';
 import { NavItem } from './types';
-import { motion, AnimatePresence } from 'motion/react';
+import { motion } from 'motion/react';
 
 export default function App() {
   const [activeSection, setActiveSection] = React.useState<NavItem>('home');
   const [isDarkMode, setIsDarkMode] = React.useState(false);
+  const isAutoScrollingRef = React.useRef(false);
+  const scrollAnimationFrameRef = React.useRef<number | null>(null);
+  const scrollReleaseTimeoutRef = React.useRef<number | null>(null);
 
   // Toggle dark mode
   const toggleDarkMode = () => {
@@ -26,28 +29,74 @@ export default function App() {
     }
   }, [isDarkMode]);
 
-  // Scroll to section when activeSection changes
-  const isScrollingRef = React.useRef(false);
-
-  React.useEffect(() => {
-    if (isScrollingRef.current) return;
-    const element = document.getElementById(activeSection);
-    if (element) {
-      isScrollingRef.current = true;
-      element.scrollIntoView({ behavior: 'smooth' });
-      setTimeout(() => {
-        isScrollingRef.current = false;
-      }, 1000);
+  const stopAutoScroll = React.useCallback(() => {
+    if (scrollAnimationFrameRef.current !== null) {
+      cancelAnimationFrame(scrollAnimationFrameRef.current);
+      scrollAnimationFrameRef.current = null;
     }
-  }, [activeSection]);
+    if (scrollReleaseTimeoutRef.current !== null) {
+      window.clearTimeout(scrollReleaseTimeoutRef.current);
+      scrollReleaseTimeoutRef.current = null;
+    }
+    isAutoScrollingRef.current = false;
+  }, []);
+
+  const navigateToSection = React.useCallback((section: NavItem) => {
+    const element = document.getElementById(section);
+    if (element) {
+      stopAutoScroll();
+
+      const navOffset = 72;
+      const startY = window.scrollY;
+      const targetY = Math.max(element.getBoundingClientRect().top + window.scrollY - navOffset, 0);
+      const distance = targetY - startY;
+      const duration = 450;
+
+      setActiveSection(section);
+
+      if (Math.abs(distance) < 2) {
+        return;
+      }
+
+      isAutoScrollingRef.current = true;
+
+      let startTime: number | null = null;
+      const easeInOutCubic = (t: number) =>
+        t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+
+      const step = (timestamp: number) => {
+        if (startTime === null) {
+          startTime = timestamp;
+        }
+
+        const elapsed = timestamp - startTime;
+        const progress = Math.min(elapsed / duration, 1);
+        const eased = easeInOutCubic(progress);
+        window.scrollTo(0, startY + distance * eased);
+
+        if (progress < 1) {
+          scrollAnimationFrameRef.current = requestAnimationFrame(step);
+        } else {
+          stopAutoScroll();
+        }
+      };
+
+      scrollAnimationFrameRef.current = requestAnimationFrame(step);
+      scrollReleaseTimeoutRef.current = window.setTimeout(() => {
+        isAutoScrollingRef.current = false;
+      }, duration + 120);
+    } else {
+      setActiveSection(section);
+    }
+  }, [stopAutoScroll]);
 
   // ScrollSpy to update activeSection on scroll
   React.useEffect(() => {
     const handleScroll = () => {
-      if (isScrollingRef.current) return;
+      if (isAutoScrollingRef.current) return;
 
       const sections: NavItem[] = ['home', 'projects', 'about', 'contact'];
-      const scrollPosition = window.scrollY + 100;
+      const scrollPosition = window.scrollY + 110;
 
       for (const section of sections) {
         const element = document.getElementById(section);
@@ -67,31 +116,70 @@ export default function App() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  React.useEffect(() => {
+    return () => stopAutoScroll();
+  }, [stopAutoScroll]);
+
+  const sectionReveal = {
+    hidden: { opacity: 0, y: 56, scale: 0.985 },
+    visible: (delay: number) => ({
+      opacity: 1,
+      y: 0,
+      scale: 1,
+      transition: {
+        duration: 0.6,
+        delay,
+        ease: [0.22, 1, 0.36, 1]
+      }
+    })
+  };
+
   return (
     <div className="min-h-screen bg-white dark:bg-neutral-950 font-sans text-gray-900 dark:text-neutral-100 selection:bg-black dark:selection:bg-white selection:text-white dark:selection:text-black transition-colors duration-300">
       <Navbar 
         activeSection={activeSection} 
-        setActiveSection={setActiveSection} 
+        onNavigate={navigateToSection}
         isDarkMode={isDarkMode}
         toggleDarkMode={toggleDarkMode}
       />
       
       <main>
         <div id="home">
-          <Hero onViewProjects={() => setActiveSection('projects')} />
+          <Hero onViewProjects={() => navigateToSection('projects')} />
         </div>
         
-        <div id="projects">
+        <motion.div
+          id="projects"
+          variants={sectionReveal}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: false, amount: 0.2 }}
+          custom={0.08}
+        >
           <Projects />
-        </div>
+        </motion.div>
         
-        <div id="about">
+        <motion.div
+          id="about"
+          variants={sectionReveal}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: false, amount: 0.22 }}
+          custom={0.14}
+        >
           <About />
-        </div>
+        </motion.div>
         
-        <div id="contact">
+        <motion.div
+          id="contact"
+          variants={sectionReveal}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: false, amount: 0.22 }}
+          custom={0.2}
+        >
           <Contact />
-        </div>
+        </motion.div>
       </main>
 
       <Footer />
