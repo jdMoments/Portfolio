@@ -1,7 +1,8 @@
 import React from 'react';
 import { NavItem } from '../types';
-import { Menu, X, Code2, Sun, Moon } from 'lucide-react';
+import { Menu, X, Sun, Moon } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
+import { GooeyNav } from './GooeyNav';
 
 interface NavbarProps {
   activeSection: NavItem;
@@ -26,41 +27,24 @@ export const Navbar: React.FC<NavbarProps> = ({
   ];
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 bg-white/80 dark:bg-neutral-950/80 backdrop-blur-md border-b border-gray-100 dark:border-neutral-800 transition-colors duration-300">
+    <nav className="fixed top-0 left-0 right-0 z-50 bg-white/40 dark:bg-neutral-900/35 backdrop-blur-xl border-b border-white/35 dark:border-white/10 shadow-[0_8px_24px_rgba(15,23,42,0.08)] dark:shadow-[0_8px_24px_rgba(0,0,0,0.35)] transition-colors duration-300">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-16 items-center">
           <div 
             className="flex items-center space-x-2 cursor-pointer"
             onClick={() => onNavigate('home')}
           >
-            <Code2 className="w-8 h-8 text-black dark:text-white" />
-            <span className="font-bold text-xl tracking-tight dark:text-white">DEV.PORTFOLIO</span>
+            <img
+              src="https://cdn-icons-png.flaticon.com/128/3242/3242257.png"
+              alt="My Portfolio logo"
+              className="w-8 h-8 object-contain"
+            />
+            <span className="font-bold text-xl tracking-tight dark:text-white">My Portfolio</span>
           </div>
 
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center space-x-4">
-            {navItems.map((item) => (
-              <button
-                key={item.id}
-                onClick={() => onNavigate(item.id)}
-                className="relative px-4 py-2 text-sm font-medium transition-colors hover:text-black dark:hover:text-white group"
-              >
-                <span className={`relative z-10 ${
-                  activeSection === item.id 
-                    ? 'text-black dark:text-white' 
-                    : 'text-gray-500 dark:text-neutral-400'
-                }`}>
-                  {item.label}
-                </span>
-                {activeSection === item.id && (
-                  <motion.div
-                    layoutId="active-nav-pill"
-                    className="absolute inset-0 bg-gray-100 dark:bg-neutral-800 rounded-full"
-                    transition={{ type: 'spring', bounce: 0.25, duration: 0.5 }}
-                  />
-                )}
-              </button>
-            ))}
+            <GooeyNav items={navItems} activeItem={activeSection} onNavigate={onNavigate} />
             
             <div className="ml-4 pl-4 border-l border-gray-100 dark:border-neutral-800">
               <button
