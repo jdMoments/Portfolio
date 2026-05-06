@@ -2,6 +2,8 @@ import React from 'react';
 import { Navbar } from './components/Navbar';
 import { Hero } from './components/Hero';
 import { Projects } from './pages/Projects';
+import { Experience } from './pages/Experience';
+import { Achievements } from './pages/Achievements';
 import { About } from './pages/About';
 import { Contact } from './pages/Contact';
 import { Footer } from './components/Footer';
@@ -11,9 +13,12 @@ import { motion } from 'motion/react';
 export default function App() {
   const [activeSection, setActiveSection] = React.useState<NavItem>('home');
   const [isDarkMode, setIsDarkMode] = React.useState(false);
+  const [heroTransitionProgress, setHeroTransitionProgress] = React.useState(0);
   const isAutoScrollingRef = React.useRef(false);
   const scrollAnimationFrameRef = React.useRef<number | null>(null);
   const scrollReleaseTimeoutRef = React.useRef<number | null>(null);
+  const homeSectionRef = React.useRef<HTMLDivElement | null>(null);
+  const projectsSectionRef = React.useRef<HTMLDivElement | null>(null);
 
   // Toggle dark mode
   const toggleDarkMode = () => {
@@ -95,7 +100,14 @@ export default function App() {
     const handleScroll = () => {
       if (isAutoScrollingRef.current) return;
 
-      const sections: NavItem[] = ['home', 'projects', 'about', 'contact'];
+      const sections: NavItem[] = [
+        'home',
+        'projects',
+        'experience',
+        'achievements',
+        'about',
+        'contact'
+      ];
       const scrollPosition = window.scrollY + 110;
 
       for (const section of sections) {
@@ -120,6 +132,57 @@ export default function App() {
     return () => stopAutoScroll();
   }, [stopAutoScroll]);
 
+  React.useEffect(() => {
+    let animationFrameId: number | null = null;
+
+    const updateHeroTransition = () => {
+      animationFrameId = null;
+
+      const homeElement = homeSectionRef.current;
+      const projectsElement = projectsSectionRef.current;
+
+      if (!homeElement || !projectsElement) {
+        return;
+      }
+
+      const viewportHeight = window.innerHeight;
+      const transitionStart = Math.max(homeElement.offsetTop, 0);
+      const transitionEnd = Math.max(
+        projectsElement.offsetTop - viewportHeight * 0.55,
+        transitionStart + 1
+      );
+      const rawProgress =
+        (window.scrollY - transitionStart) / (transitionEnd - transitionStart);
+      const nextProgress = Math.max(0, Math.min(rawProgress, 1));
+
+      setHeroTransitionProgress((current) =>
+        Math.abs(current - nextProgress) < 0.01 ? current : nextProgress
+      );
+    };
+
+    const requestHeroTransitionUpdate = () => {
+      if (animationFrameId !== null) {
+        return;
+      }
+
+      animationFrameId = window.requestAnimationFrame(updateHeroTransition);
+    };
+
+    requestHeroTransitionUpdate();
+
+    window.addEventListener('scroll', requestHeroTransitionUpdate, { passive: true });
+    window.addEventListener('resize', requestHeroTransitionUpdate);
+
+    return () => {
+      window.removeEventListener('scroll', requestHeroTransitionUpdate);
+      window.removeEventListener('resize', requestHeroTransitionUpdate);
+
+      if (animationFrameId !== null) {
+        cancelAnimationFrame(animationFrameId);
+      }
+    };
+  }, []);
+
   const sectionReveal = {
     hidden: { opacity: 0, y: 56, scale: 0.985 },
     visible: (delay: number) => ({
@@ -134,6 +197,12 @@ export default function App() {
     })
   };
 
+  const homeOpacity = 1;
+  const projectsOpacity = 1;
+  const stackTransitionProgress = Math.min(heroTransitionProgress / 0.9, 1);
+  const projectsTranslateY = (1 - stackTransitionProgress) * 120;
+  const projectsScale = 1;
+
   return (
     <div className="min-h-screen bg-white dark:bg-neutral-950 font-sans text-gray-900 dark:text-neutral-100 selection:bg-black dark:selection:bg-white selection:text-white dark:selection:text-black transition-colors duration-300">
       <Navbar 
@@ -144,32 +213,67 @@ export default function App() {
       />
       
       <main>
-        <div id="home">
-          <Hero onViewProjects={() => navigateToSection('projects')} />
+        <div className="relative">
+          <div
+            id="home"
+            ref={homeSectionRef}
+            className="sticky top-0 z-0"
+            style={{
+              opacity: homeOpacity,
+              willChange: 'auto'
+            }}
+          >
+            <Hero onViewProjects={() => navigateToSection('projects')} />
+          </div>
+          
+          <div
+            id="projects"
+            ref={projectsSectionRef}
+            className="relative z-10 -mt-[12vh] rounded-t-[2rem] bg-white dark:bg-neutral-950 shadow-[0_-20px_60px_rgba(15,23,42,0.08)] dark:shadow-[0_-20px_60px_rgba(0,0,0,0.32)]"
+            style={{
+              opacity: projectsOpacity,
+              transform: `translate3d(0, ${projectsTranslateY}px, 0) scale(${projectsScale})`,
+              transformOrigin: 'center top',
+              willChange: 'transform'
+            }}
+          >
+            <Projects />
+          </div>
         </div>
         
         <motion.div
-          id="projects"
-          variants={sectionReveal}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: false, amount: 0.2 }}
-          custom={0.08}
-        >
-          <Projects />
-        </motion.div>
-        
-        <motion.div
-          id="about"
+          id="experience"
           variants={sectionReveal}
           initial="hidden"
           whileInView="visible"
           viewport={{ once: false, amount: 0.22 }}
           custom={0.14}
         >
+          <Experience />
+        </motion.div>
+
+        <motion.div
+          id="achievements"
+          variants={sectionReveal}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: false, amount: 0.22 }}
+          custom={0.17}
+        >
+          <Achievements />
+        </motion.div>
+
+        <motion.div
+          id="about"
+          variants={sectionReveal}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: false, amount: 0.22 }}
+          custom={0.19}
+        >
           <About />
         </motion.div>
-        
+
         <motion.div
           id="contact"
           variants={sectionReveal}

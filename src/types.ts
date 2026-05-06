@@ -8,4 +8,10 @@ export interface Project {
   technologies: string[];
 }
 
-export type NavItem = 'home' | 'projects' | 'about' | 'contact';
+export type NavItem =
+  | 'home'
+  | 'projects'
+  | 'experience'
+  | 'achievements'
+  | 'about'
+  | 'contact';
