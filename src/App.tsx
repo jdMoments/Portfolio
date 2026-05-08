@@ -197,10 +197,8 @@ export default function App() {
     })
   };
 
-  const homeOpacity = 1;
   const projectsOpacity = 1;
-  const stackTransitionProgress = Math.min(heroTransitionProgress / 0.9, 1);
-  const projectsTranslateY = (1 - stackTransitionProgress) * 120;
+  const projectsTranslateY = 0;
   const projectsScale = 1;
 
   return (
@@ -219,11 +217,13 @@ export default function App() {
             ref={homeSectionRef}
             className="sticky top-0 z-0"
             style={{
-              opacity: homeOpacity,
               willChange: 'auto'
             }}
           >
-            <Hero onViewProjects={() => navigateToSection('projects')} />
+            <Hero
+              onViewProjects={() => navigateToSection('projects')}
+              transitionProgress={heroTransitionProgress}
+            />
           </div>
           
           <div

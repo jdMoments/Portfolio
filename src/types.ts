@@ -3,9 +3,11 @@ export interface Project {
   title: string;
   description: string;
   image: string;
+  backgroundPosition?: string;
   deployedUrl: string;
   githubUrl?: string;
   technologies: string[];
+  role?: string;
 }
 
 export type NavItem =

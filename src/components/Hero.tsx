@@ -5,10 +5,30 @@ import ShapeGrid from './ShapeGrid';
 
 interface HeroProps {
   onViewProjects: () => void;
+  transitionProgress?: number;
 }
 
-export const Hero: React.FC<HeroProps> = ({ onViewProjects }) => {
+const heroTickerItems = [
+  'Full-Stack Developer',
+  'React & TypeScript',
+  'Node.js & APIs',
+  'Responsive Interfaces',
+  'Modern Web Experiences'
+];
+
+export const Hero: React.FC<HeroProps> = ({ onViewProjects, transitionProgress = 0 }) => {
   const [gridDirection, setGridDirection] = React.useState<'right' | 'left'>('left');
+  const scrollStyle = React.useMemo(
+    () => ({
+      opacity: 1 - transitionProgress,
+      transform: `scale(${1 - transitionProgress * 0.1})`
+    }),
+    [transitionProgress]
+  );
+  const doubledTickerItems = React.useMemo(
+    () => [...heroTickerItems, ...heroTickerItems],
+    []
+  );
 
   React.useEffect(() => {
     const sequence = [
@@ -53,72 +73,91 @@ export const Hero: React.FC<HeroProps> = ({ onViewProjects }) => {
 
       {/* Background Accents */}
       <div className="absolute top-0 right-0 z-0 w-1/2 h-full bg-white/50 dark:bg-neutral-900/20 skew-x-12 transform origin-top-right" />
-      
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-        <div className="max-w-3xl">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-          >
-            <div className="mb-8">
-              <div className="w-24 h-24 rounded-full border-4 border-black shadow-[0_10px_24px_rgba(0,0,0,0.35),inset_0_2px_2px_rgba(255,255,255,0.35),inset_0_-4px_8px_rgba(0,0,0,0.5)] overflow-hidden">
-                <img 
-                  src="https://wisenergy.site/Jholmer.png" 
-                  alt="Profile" 
-                  className="w-full h-full object-cover object-center scale-110"
-                  referrerPolicy="no-referrer"
-                />
+
+      <div
+        style={scrollStyle}
+        className="relative z-10 transition-all duration-100 ease-linear"
+      >
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="max-w-3xl">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6 }}
+            >
+              <div className="mb-8">
+                <div className="w-24 h-24 rounded-full border-4 border-black shadow-[0_10px_24px_rgba(0,0,0,0.35),inset_0_2px_2px_rgba(255,255,255,0.35),inset_0_-4px_8px_rgba(0,0,0,0.5)] overflow-hidden">
+                  <img
+                    src="https://wisenergy.site/Jholmer.png"
+                    alt="Profile"
+                    className="w-full h-full object-cover object-center scale-110"
+                    referrerPolicy="no-referrer"
+                  />
+                </div>
               </div>
-            </div>
-            <span className="inline-block px-3 py-1 bg-black dark:bg-white text-white dark:text-black text-[10px] font-bold uppercase tracking-[0.2em] rounded-full mb-6">
-              Available for Hire
-            </span>
-            <h1 className="text-6xl lg:text-8xl font-bold tracking-tighter leading-[0.9] text-gray-900 dark:text-white mb-8">
-              Jholmer L. <br />
-              Damayo
-            </h1>
-            <p className="text-xl text-gray-500 dark:text-neutral-400 leading-relaxed mb-10 max-w-xl">
-              I'm a Full-Stack Developer specializing in building exceptional digital experiences that are fast, accessible, and visually stunning.
-            </p>
-            
-            <div className="flex flex-wrap gap-4 items-center">
-              <button
-                onClick={onViewProjects}
-                className="px-8 py-4 bg-black dark:bg-white text-white dark:text-black rounded-full font-bold hover:bg-gray-800 dark:hover:bg-neutral-200 transition-all flex items-center group"
+              <span className="inline-block px-3 py-1 bg-black dark:bg-white text-white dark:text-black text-[10px] font-bold uppercase tracking-[0.2em] rounded-full mb-6">
+                Available for Hire
+              </span>
+              <h1 className="text-6xl lg:text-8xl font-bold tracking-tighter leading-[0.9] text-gray-900 dark:text-white mb-8">
+                Jholmer L. <br />
+                Damayo
+              </h1>
+              <p className="text-xl text-gray-500 dark:text-neutral-400 leading-relaxed mb-10 max-w-xl">
+                I'm a Full-Stack Developer specializing in building exceptional digital experiences that are fast, accessible, and visually stunning.
+              </p>
+
+              <div className="flex flex-wrap gap-4 items-center">
+                <button
+                  onClick={onViewProjects}
+                  className="px-8 py-4 bg-black dark:bg-white text-white dark:text-black rounded-full font-bold hover:bg-gray-800 dark:hover:bg-neutral-200 transition-all flex items-center group"
+                >
+                  View My Work
+                  <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                </button>
+
+                <div className="flex space-x-4 ml-4">
+                  <a
+                    href="https://github.com/jdMoments"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="p-3 text-gray-400 hover:text-black dark:hover:text-white transition-colors"
+                  >
+                    <Github className="w-6 h-6" />
+                  </a>
+                  <a
+                    href="https://www.linkedin.com/in/jholmer-damayo-10a603295/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="p-3 text-gray-400 hover:text-black dark:hover:text-white transition-colors"
+                  >
+                    <Linkedin className="w-6 h-6" />
+                  </a>
+                  <a
+                    href="https://www.facebook.com/jholmerrrr"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="p-3 text-gray-400 hover:text-black dark:hover:text-white transition-colors"
+                  >
+                    <Facebook className="w-6 h-6" />
+                  </a>
+                </div>
+              </div>
+            </motion.div>
+          </div>
+        </div>
+
+        <div className="relative mt-16 overflow-hidden border-y border-emerald-300/60 bg-emerald-100/60 py-4 backdrop-blur-sm dark:border-emerald-500/20 dark:bg-emerald-950/20">
+          <div className="hero-ticker-track flex w-max">
+            {doubledTickerItems.map((item, index) => (
+              <span
+                key={`${item}-${index}`}
+                className="inline-flex items-center gap-3 px-10 whitespace-nowrap text-xs font-semibold uppercase tracking-[0.24em] text-emerald-800 dark:text-emerald-200"
               >
-                View My Work
-                <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
-              </button>
-              
-              <div className="flex space-x-4 ml-4">
-                <a 
-                  href="https://github.com/jdMoments" 
-                  target="_blank" 
-                  rel="noopener noreferrer"
-                  className="p-3 text-gray-400 hover:text-black dark:hover:text-white transition-colors"
-                >
-                  <Github className="w-6 h-6" />
-                </a>
-                <a 
-                  href="https://www.linkedin.com/in/jholmer-damayo-10a603295/" 
-                  target="_blank" 
-                  rel="noopener noreferrer"
-                  className="p-3 text-gray-400 hover:text-black dark:hover:text-white transition-colors"
-                >
-                  <Linkedin className="w-6 h-6" />
-                </a>
-                <a 
-                  href="https://www.facebook.com/jholmerrrr" 
-                  target="_blank" 
-                  rel="noopener noreferrer"
-                  className="p-3 text-gray-400 hover:text-black dark:hover:text-white transition-colors"
-                >
-                  <Facebook className="w-6 h-6" />
-                </a>
-              </div>
-            </div>
-          </motion.div>
+                <span className="inline-block h-1.5 w-1.5 rounded-full bg-emerald-500 dark:bg-emerald-300" />
+                {item}
+              </span>
+            ))}
+          </div>
         </div>
       </div>
     </section>

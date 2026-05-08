@@ -3,7 +3,11 @@ import { projects } from '../data/projects';
 import { ProjectCard } from '../components/ProjectCard';
 import { motion, AnimatePresence } from 'motion/react';
 import MagicBento, { MagicBentoItem } from '../components/MagicBento';
-import { Github } from 'lucide-react';
+import { ArrowLeft, Github } from 'lucide-react';
+
+const PROJECT_REVEAL_DELAY_MS = 1500;
+const PROJECT_RETURN_DELAY_MS = 10000;
+const PROJECT_VIEWPORT_TOP_SHIFT = 0;
 
 export const Projects: React.FC = () => {
   const MIN_BENTO_VISIBLE = 2;
@@ -11,11 +15,17 @@ export const Projects: React.FC = () => {
   const [pulseToken, setPulseToken] = useState(0);
   const [showMagicBento, setShowMagicBento] = useState(false);
   const [bentoProjectIds, setBentoProjectIds] = useState<string[]>([]);
+  const sectionRef = useRef<HTMLElement | null>(null);
   const inactivityTimerRef = useRef<number | null>(null);
+  const autoReturnTimerRef = useRef<number | null>(null);
   const selectionTimerRef = useRef<number | null>(null);
   const [pendingProjectId, setPendingProjectId] = useState<string | null>(null);
 
   const activeProject = projects.find((p) => p.id === activeProjectId);
+  const activeTitleClassName =
+    activeProject?.id === '1'
+      ? 'max-w-none text-white text-[3rem] leading-[0.94] sm:text-[3.6rem] lg:text-[4.4rem] lg:whitespace-nowrap'
+      : 'max-w-3xl text-white text-4xl leading-[0.92] lg:text-[4rem]';
   const projectById = useMemo(
     () => new Map(projects.map((project) => [project.id, project])),
     []
@@ -35,13 +45,53 @@ export const Projects: React.FC = () => {
     }
   }, []);
 
+  const clearAutoReturnTimer = useCallback(() => {
+    if (autoReturnTimerRef.current !== null) {
+      window.clearTimeout(autoReturnTimerRef.current);
+      autoReturnTimerRef.current = null;
+    }
+  }, []);
+
+  const closeActiveProject = useCallback(() => {
+    clearRevealTimer();
+    clearSelectionTimer();
+    clearAutoReturnTimer();
+    setPendingProjectId(null);
+    setShowMagicBento(false);
+    setBentoProjectIds([]);
+    setActiveProjectId(null);
+  }, [clearAutoReturnTimer, clearRevealTimer, clearSelectionTimer]);
+
   const scheduleReveal = useCallback(() => {
     if (!activeProjectId || showMagicBento) return;
     clearRevealTimer();
     inactivityTimerRef.current = window.setTimeout(() => {
       setShowMagicBento(true);
-    }, 3000);
+    }, PROJECT_REVEAL_DELAY_MS);
   }, [activeProjectId, showMagicBento, clearRevealTimer]);
+
+  const scheduleAutoReturn = useCallback(() => {
+    if (!activeProjectId) return;
+    clearAutoReturnTimer();
+    autoReturnTimerRef.current = window.setTimeout(() => {
+      closeActiveProject();
+    }, PROJECT_RETURN_DELAY_MS);
+  }, [activeProjectId, clearAutoReturnTimer, closeActiveProject]);
+
+  const scrollSectionIntoView = useCallback(() => {
+    const section = sectionRef.current;
+    if (!section) return;
+
+    const targetY = Math.max(
+      section.getBoundingClientRect().top + window.scrollY + PROJECT_VIEWPORT_TOP_SHIFT,
+      0
+    );
+
+    window.scrollTo({
+      top: targetY,
+      behavior: 'smooth'
+    });
+  }, []);
 
   useEffect(() => {
     if (activeProjectId && !showMagicBento) {
@@ -50,17 +100,41 @@ export const Projects: React.FC = () => {
       clearRevealTimer();
     }
 
+    if (activeProjectId) {
+      scheduleAutoReturn();
+    } else {
+      clearAutoReturnTimer();
+    }
+
     return () => {
       clearRevealTimer();
       clearSelectionTimer();
+      clearAutoReturnTimer();
     };
-  }, [activeProjectId, showMagicBento, scheduleReveal, clearRevealTimer, clearSelectionTimer]);
+  }, [
+    activeProjectId,
+    showMagicBento,
+    scheduleReveal,
+    scheduleAutoReturn,
+    clearRevealTimer,
+    clearSelectionTimer,
+    clearAutoReturnTimer
+  ]);
 
   const handleProjectImageClick = (id: string) => {
     clearSelectionTimer();
+    clearRevealTimer();
+    clearAutoReturnTimer();
     setPendingProjectId(id);
 
     const previousActiveId = activeProjectId;
+    const openingFromProjectList = previousActiveId === null;
+
+    if (openingFromProjectList) {
+      setShowMagicBento(false);
+      setBentoProjectIds([]);
+      scrollSectionIntoView();
+    }
 
     selectionTimerRef.current = window.setTimeout(() => {
       setActiveProjectId(id);
@@ -89,8 +163,13 @@ export const Projects: React.FC = () => {
   };
 
   const handleSectionInteraction = () => {
-    if (!activeProjectId || showMagicBento) return;
-    scheduleReveal();
+    if (!activeProjectId) return;
+
+    scheduleAutoReturn();
+
+    if (!showMagicBento) {
+      scheduleReveal();
+    }
   };
 
   const bentoCards: MagicBentoItem[] = useMemo(() => {
@@ -108,58 +187,80 @@ export const Projects: React.FC = () => {
 
   return (
     <section
+      ref={sectionRef}
       onMouseMove={handleSectionInteraction}
+      onMouseEnter={handleSectionInteraction}
       onTouchStart={handleSectionInteraction}
       onWheel={handleSectionInteraction}
       onKeyDown={handleSectionInteraction}
       className={`relative transition-colors duration-700 overflow-hidden ${
-        activeProject ? 'h-screen py-16 lg:py-20' : 'min-h-[600px] py-24'
-      } bg-white dark:bg-neutral-950`}
+        activeProject ? 'h-screen pt-24 pb-6 lg:pt-28 lg:pb-8' : 'min-h-[600px] py-24'
+      } bg-[#02030a]`}
     >
-      <div className="absolute inset-0 z-0 pointer-events-none">
+      <div className="absolute inset-0 z-0">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(22,163,74,0.12),transparent_34%),linear-gradient(180deg,rgba(2,6,23,0.82),rgba(2,6,23,0.94))]" />
+      </div>
+
+      <div className="absolute inset-0 z-[1] pointer-events-none">
         <AnimatePresence initial={false} mode="sync">
           {activeProject && (
             <motion.div
               key={activeProject.id}
-              initial={{ opacity: 0, scale: 1.06 }}
+              initial={{ opacity: 0, scale: 1.04 }}
               animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 1.03 }}
-              transition={{ duration: 0.34, ease: [0.22, 1, 0.36, 1] }}
+              exit={{ opacity: 0, scale: 1.02 }}
+              transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
               className="absolute inset-0"
             >
               <img
                 src={activeProject.image}
                 alt=""
-                className="w-full h-full object-cover"
+                className="h-full w-full object-cover"
                 referrerPolicy="no-referrer"
+                style={{ objectPosition: activeProject.backgroundPosition ?? 'center' }}
               />
-              <div className="absolute inset-0 magic-bento-background-glow" />
-              <div className="absolute inset-0 magic-bento-background-grid" />
-              <div className="absolute inset-0 bg-black/45 dark:bg-black/60" />
-              <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-black/30 to-black/60" />
+              <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(2,6,23,0.34)_0%,rgba(2,6,23,0.18)_38%,rgba(2,6,23,0.08)_100%)]" />
+              <div className="absolute inset-0 bg-[radial-gradient(circle_at_65%_42%,rgba(255,255,255,0.14),transparent_30%),linear-gradient(180deg,rgba(255,255,255,0.04),rgba(2,6,23,0.14)_58%,rgba(2,6,23,0.24)_100%)]" />
             </motion.div>
           )}
         </AnimatePresence>
       </div>
 
-      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="mb-16">
+      <div
+        className={`relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 ${
+          activeProject ? 'flex h-full flex-col justify-between' : ''
+        }`}
+      >
+        <div className={`${activeProject ? 'mb-6 lg:mb-8' : 'mb-16'}`}>
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.5 }}
+            className={activeProject ? 'max-w-fit rounded-3xl border border-white/12 bg-black/12 px-5 py-5 backdrop-blur-[3px] sm:px-6' : ''}
           >
+            {activeProject && (
+              <button
+                type="button"
+                onClick={closeActiveProject}
+                className="mb-4 inline-flex items-center gap-2 self-start rounded-full border border-white/30 bg-black/25 px-4 py-2 text-sm font-semibold text-white backdrop-blur-sm transition hover:bg-black/35"
+              >
+                <ArrowLeft className="h-4 w-4" />
+                Back to projects
+              </button>
+            )}
             <h2
               className={`text-4xl font-bold tracking-tight mb-4 transition-colors duration-500 ${
-                activeProject ? 'text-white' : 'text-gray-900 dark:text-white'
+                activeProject ? activeTitleClassName : 'text-white'
               }`}
             >
-              {activeProject ? activeProject.title : 'Selected Projects'}
+              {activeProject ? activeProject.title : 'My Projects'}
             </h2>
             <p
               className={`text-lg max-w-2xl transition-colors duration-500 ${
-                activeProject ? 'text-gray-100/90' : 'text-gray-500 dark:text-neutral-400'
+                activeProject
+                  ? 'max-w-[66rem] text-base leading-7 text-gray-100/90 lg:text-[1rem]'
+                  : 'max-w-full whitespace-nowrap text-base text-gray-300 lg:text-lg'
               }`}
             >
               {activeProject
@@ -194,7 +295,7 @@ export const Projects: React.FC = () => {
           </div>
         )}
         {activeProject && (
-          <div className="mt-3 grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_560px] gap-8 lg:gap-8 items-start">
+          <div className="grid min-h-0 flex-1 grid-cols-1 items-end gap-5 lg:grid-cols-[minmax(0,1fr)_500px] lg:gap-7">
             <AnimatePresence mode="wait">
               <motion.div
                 key={activeProject.id}
@@ -202,9 +303,14 @@ export const Projects: React.FC = () => {
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -10 }}
                 transition={{ duration: 0.45, delay: 0.08 }}
-                className="text-left lg:pr-6"
+                className="rounded-3xl border border-white/12 bg-black/14 px-5 py-5 text-left backdrop-blur-[4px] lg:max-w-3xl lg:self-end lg:pr-4 sm:px-6"
               >
-                <div className="flex flex-wrap gap-3 mt-4">
+                {activeProject.role && (
+                  <p className="mb-4 text-sm font-medium text-emerald-300/95">
+                    Role: <span className="text-white">{activeProject.role}</span>
+                  </p>
+                )}
+                <div className="mt-2 flex flex-wrap gap-3">
                   {activeProject.technologies.map((tech) => (
                     <span
                       key={tech}
@@ -223,7 +329,7 @@ export const Projects: React.FC = () => {
                     whileHover={{ scale: 1.12 }}
                     whileTap={{ scale: 0.96 }}
                     transition={{ type: 'spring', stiffness: 320, damping: 20 }}
-                    className="mt-6 inline-flex items-center justify-center w-11 h-11 rounded-full border border-white/35 bg-white/10 text-white hover:bg-white/20"
+                    className="mt-5 inline-flex items-center justify-center w-11 h-11 rounded-full border border-white/35 bg-white/10 text-white hover:bg-white/20"
                     aria-label={`Open ${activeProject.title} GitHub repository`}
                   >
                     <Github className="w-5 h-5" />
@@ -239,7 +345,7 @@ export const Projects: React.FC = () => {
                   animate={{ opacity: 1, x: 0 }}
                   exit={{ opacity: 0, x: 20 }}
                   transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-                  className="w-full max-w-[560px] justify-self-end self-start lg:mt-[48px]"
+                  className="w-full max-w-[500px] justify-self-end self-end"
                 >
                   <MagicBento
                     cards={bentoCards.slice(0, MIN_BENTO_VISIBLE)}
@@ -268,17 +374,7 @@ export const Projects: React.FC = () => {
             transition={{ duration: 0.4 }}
             className="mt-6 text-xs uppercase tracking-[0.2em] text-white/70"
           >
-            No interaction for 3 seconds reveals other projects on the right
-          </motion.p>
-        )}
-        {activeProject && showMagicBento && (
-          <motion.p
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.35 }}
-            className="mt-6 text-xs uppercase tracking-[0.18em] text-white/70"
-          >
-            Always showing 2 projects on the right
+            No interaction for 1.5 seconds reveals other projects on the right
           </motion.p>
         )}
       </div>

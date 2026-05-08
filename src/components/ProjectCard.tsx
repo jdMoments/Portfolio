@@ -95,6 +95,11 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
           transition={isPendingSelection ? { duration: 0.22 } : { duration: 0.2 }}
           referrerPolicy="no-referrer"
         />
+        <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/80 via-black/35 to-transparent px-5 py-4">
+          <h3 className="text-xl font-bold text-white transition-colors">
+            {project.title}
+          </h3>
+        </div>
       </motion.div>
 
       <div className="p-6 flex flex-col flex-grow">
@@ -108,13 +113,7 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
             </span>
           ))}
         </div>
-        <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2 group-hover:text-black dark:group-hover:text-white transition-colors">
-          {project.title}
-        </h3>
-        <p className="text-gray-500 dark:text-neutral-400 text-sm leading-relaxed mb-6 flex-grow">
-          {project.description}
-        </p>
-        <div className="pt-4 border-t border-gray-50 dark:border-neutral-800">
+        <div className="mt-auto pt-4 border-t border-gray-50 dark:border-neutral-800">
           <a
             href={project.deployedUrl}
             target="_blank"

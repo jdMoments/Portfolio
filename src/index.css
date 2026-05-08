@@ -151,3 +151,17 @@
   opacity: 1;
   animation: projectCardParticles 4s linear infinite alternate;
 }
+
+@keyframes heroTickerScroll {
+  from {
+    transform: translateX(0);
+  }
+
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+.hero-ticker-track {
+  animation: heroTickerScroll 30s linear infinite;
+}
