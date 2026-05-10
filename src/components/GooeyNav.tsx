@@ -189,8 +189,22 @@ export const GooeyNav = ({
     };
   }, []);
 
+  const restoreActiveEffect = () => {
+    const currentLi = navRef.current?.querySelectorAll('li')[activeIndex];
+    if (!currentLi) return;
+
+    updateEffectPosition(currentLi, activeIndex);
+
+    if (textRef.current) {
+      textRef.current.classList.remove('active');
+      void textRef.current.offsetWidth;
+      textRef.current.classList.add('active');
+      textRef.current.innerText = items[activeIndex]?.label ?? '';
+    }
+  };
+
   return (
-    <div className="gooey-nav-container" ref={containerRef}>
+    <div className="gooey-nav-container" ref={containerRef} onMouseLeave={restoreActiveEffect}>
       <svg className="gooey-filter-defs" aria-hidden="true" focusable="false">
         <defs>
           <filter id="gooey-nav-filter">
@@ -212,6 +226,18 @@ export const GooeyNav = ({
             <li key={item.id} className={activeIndex === index ? 'active' : ''}>
               <button
                 type="button"
+                onMouseEnter={(event) => {
+                  const parent = event.currentTarget.parentElement;
+                  if (parent) {
+                    triggerEffect(parent, index, false);
+                  }
+                }}
+                onFocus={(event) => {
+                  const parent = event.currentTarget.parentElement;
+                  if (parent) {
+                    triggerEffect(parent, index, false);
+                  }
+                }}
                 onClick={(event) => {
                   const parent = event.currentTarget.parentElement;
                   if (parent) {

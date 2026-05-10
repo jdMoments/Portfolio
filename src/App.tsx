@@ -215,7 +215,7 @@ export default function App() {
           <div
             id="home"
             ref={homeSectionRef}
-            className="sticky top-0 z-0"
+            className="sticky top-16 z-0"
             style={{
               willChange: 'auto'
             }}
@@ -229,7 +229,7 @@ export default function App() {
           <div
             id="projects"
             ref={projectsSectionRef}
-            className="relative z-10 -mt-[12vh] rounded-t-[2rem] bg-white dark:bg-neutral-950 shadow-[0_-20px_60px_rgba(15,23,42,0.08)] dark:shadow-[0_-20px_60px_rgba(0,0,0,0.32)]"
+            className="relative z-10 bg-white dark:bg-neutral-950"
             style={{
               opacity: projectsOpacity,
               transform: `translate3d(0, ${projectsTranslateY}px, 0) scale(${projectsScale})`,

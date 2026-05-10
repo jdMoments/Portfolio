@@ -5,8 +5,8 @@
   --color-4: #facc15;
   --nav-pill-bg: rgba(255, 255, 255, 0.34);
   --nav-text: #6b7280;
-  --nav-hover-text: #111827;
-  --nav-active-text: #111827;
+  --nav-hover-text: #000000;
+  --nav-active-text: #000000;
 
   position: relative;
   height: 2.5rem;
@@ -72,8 +72,9 @@
 }
 
 .gooey-nav-container li:hover button,
+.gooey-nav-container li button:focus-visible,
 .gooey-nav-container li.active button {
-  color: var(--nav-active-text);
+  color: var(--nav-hover-text);
 }
 
 .gooey-nav-container .effect {

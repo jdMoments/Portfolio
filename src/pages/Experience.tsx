@@ -140,7 +140,7 @@ export const Experience: React.FC = () => {
 
               return (
                 <motion.button
-                  key={`${role.company}-${role.period}`}
+                  key={`${role.id}-${role.period}`}
                   type="button"
                   initial={{ opacity: 0, y: 22 }}
                   whileInView={{ opacity: 1, y: 0 }}

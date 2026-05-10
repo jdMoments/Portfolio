@@ -1,6 +1,8 @@
 import React from 'react';
 import { motion } from 'motion/react';
 import { CheckCircle2 } from 'lucide-react';
+import portraitImage from '../assets/jholmer-portrait.png';
+import SoftAurora from '../components/SoftAurora';
 
 export const About: React.FC = () => {
   const skills = [
@@ -30,26 +32,54 @@ export const About: React.FC = () => {
   };
 
   return (
-    <section className="py-24 bg-white dark:bg-neutral-950 transition-colors duration-300">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+    <section className="relative overflow-hidden bg-[#060815] py-24 transition-colors duration-300">
+      <div className="absolute inset-0 z-0 opacity-60">
+        <SoftAurora
+          speed={0.35}
+          scale={1.1}
+          brightness={0.4}
+          color1="#eef2ff"
+          color2="#7dd3fc"
+          noiseFrequency={1.8}
+          noiseAmplitude={0.65}
+          bandHeight={0.58}
+          bandSpread={0.72}
+          octaveDecay={0.16}
+          layerOffset={0.35}
+          colorSpeed={0.45}
+          enableMouseInteraction={false}
+          mouseInfluence={0.1}
+        />
+        <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(6,8,21,0.8),rgba(6,8,21,0.92)_45%,rgba(6,8,21,0.98)),radial-gradient(circle_at_top,rgba(125,211,252,0.1),transparent_24%)]" />
+      </div>
+
+      <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="grid grid-cols-1 items-center gap-16 lg:grid-cols-2">
           <motion.div
             initial={{ opacity: 0, x: -20 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6 }}
+            className="relative overflow-hidden rounded-[2rem] border border-slate-200/80 bg-slate-950 p-8 shadow-[0_24px_70px_rgba(15,23,42,0.16)] lg:p-10"
           >
-            <h2 className="text-4xl font-bold tracking-tight text-gray-900 dark:text-white mb-8">About Me</h2>
-            <div className="space-y-6 text-lg text-gray-500 dark:text-neutral-400 leading-relaxed">
-              <p>
-                I'm a self-taught developer with a passion for building products that solve real-world problems. With over 5 years of experience in the industry, I've worked with startups and established companies to deliver high-quality software.
-              </p>
-              <p>
-                My approach is centered around clean code, user-centric design, and continuous learning. I believe that the best software is not just functional, but also intuitive and delightful to use.
-              </p>
-              <p>
-                When I'm not coding, you can find me hiking in the mountains, reading about new technologies, or contributing to open-source projects.
-              </p>
+            <div
+              className="absolute inset-0 bg-cover bg-center opacity-30"
+              style={{ backgroundImage: `url(${portraitImage})` }}
+            />
+            <div className="absolute inset-0 bg-[linear-gradient(135deg,rgba(2,6,23,0.88),rgba(15,23,42,0.78),rgba(2,6,23,0.9))]" />
+            <div className="relative z-10">
+              <h2 className="mb-8 text-4xl font-bold tracking-tight text-white">About Me</h2>
+              <div className="space-y-6 text-lg leading-relaxed text-slate-200/88">
+                <p>
+                  I'm a self-taught developer with a passion for building products that solve real-world problems. With over 5 years of experience in the industry, I've worked with startups and established companies to deliver high-quality software.
+                </p>
+                <p>
+                  My approach is centered around clean code, user-centric design, and continuous learning. I believe that the best software is not just functional, but also intuitive and delightful to use.
+                </p>
+                <p>
+                  When I'm not coding, you can find me hiking in the mountains, reading about new technologies, or contributing to open-source projects.
+                </p>
+              </div>
             </div>
           </motion.div>
 
@@ -58,9 +88,9 @@ export const About: React.FC = () => {
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6 }}
-            className="bg-gray-50 dark:bg-neutral-900 rounded-3xl p-8 lg:p-12 border border-gray-100 dark:border-neutral-800"
+            className="rounded-3xl border border-white/10 bg-white/[0.06] p-8 backdrop-blur-xl lg:p-12"
           >
-            <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-8">Technical Expertise</h3>
+            <h3 className="mb-8 text-2xl font-bold text-white">Technical Expertise</h3>
             <motion.div 
               variants={containerVariants}
               initial="hidden"
@@ -72,16 +102,16 @@ export const About: React.FC = () => {
                 <motion.div 
                   key={skill} 
                   variants={itemVariants}
-                  className="flex items-center space-x-3 p-3 bg-white dark:bg-neutral-800 rounded-xl border border-gray-100 dark:border-neutral-700 shadow-sm"
+                  className="flex items-center space-x-3 rounded-xl border border-white/10 bg-slate-950/35 p-3 shadow-[0_14px_40px_rgba(0,0,0,0.16)]"
                 >
-                  <CheckCircle2 className="w-5 h-5 text-black dark:text-white" />
-                  <span className="font-medium text-gray-700 dark:text-neutral-300">{skill}</span>
+                  <CheckCircle2 className="h-5 w-5 text-cyan-200" />
+                  <span className="font-medium text-slate-200">{skill}</span>
                 </motion.div>
               ))}
             </motion.div>
             
-            <div className="mt-12 p-6 bg-black dark:bg-white rounded-2xl text-white dark:text-black">
-              <p className="text-sm font-medium opacity-70 mb-2 uppercase tracking-widest">Currently Learning</p>
+            <div className="mt-12 rounded-2xl border border-cyan-200/10 bg-white/10 p-6 text-white">
+              <p className="mb-2 text-sm font-medium uppercase tracking-widest opacity-70">Currently Learning</p>
               <p className="text-xl font-bold italic">Web3 Development & Smart Contracts</p>
             </div>
           </motion.div>

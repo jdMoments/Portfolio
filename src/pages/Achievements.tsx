@@ -2,6 +2,7 @@ import React from 'react';
 import { AnimatePresence, motion } from 'motion/react';
 import { Award, Rocket, Trophy, X } from 'lucide-react';
 import Lanyard from '../components/Lanyard';
+import Particles from '../components/Particles';
 
 const achievements = [
   {
@@ -27,14 +28,14 @@ const achievements = [
 const schoolAchievements = [
   {
     id: 'lanyard-1',
-    title: 'Dean’s List Honor',
+    title: "Dean's List Honor",
     subtitle: 'Recognized for consistent academic excellence across major subjects.',
     year: '2021',
     tag: 'Academic',
     accentFrom: '#34d399',
     accentTo: '#0f172a',
     details:
-      'Earned a spot on the Dean’s List after maintaining strong grades throughout the academic year and contributing to classroom projects with dependable delivery.',
+      "Earned a spot on the Dean's List after maintaining strong grades throughout the academic year and contributing to classroom projects with dependable delivery.",
     highlights: ['GPA above target threshold', 'Strong course performance', 'Consistent semester standing']
   },
   {
@@ -175,15 +176,33 @@ export const Achievements: React.FC = () => {
   }, [selectedLanyard]);
 
   return (
-    <section className="py-24 bg-white dark:bg-neutral-950 transition-colors duration-300">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center max-w-3xl mx-auto mb-14">
+    <section className="relative overflow-hidden bg-[#050816] py-24 transition-colors duration-300">
+      <div className="absolute inset-0 z-0">
+        <Particles
+          className="opacity-80"
+          particleColors={['#ffffff', '#8cc8ff', '#7df9d1', '#c7b6ff']}
+          particleCount={220}
+          particleSpread={9}
+          speed={0.08}
+          particleBaseSize={92}
+          moveParticlesOnHover={true}
+          particleHoverFactor={0.22}
+          alphaParticles={true}
+          sizeRandomness={0.75}
+          cameraDistance={18}
+          pixelRatio={1}
+        />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(125,249,209,0.12),transparent_26%),radial-gradient(circle_at_80%_22%,rgba(140,200,255,0.12),transparent_24%),linear-gradient(180deg,rgba(3,7,18,0.78),rgba(5,8,22,0.92))]" />
+      </div>
+
+      <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="mx-auto mb-14 max-w-3xl text-center">
           <motion.p
             initial={{ opacity: 0, y: 18 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.45 }}
-            className="text-sm font-bold uppercase tracking-[0.25em] text-gray-400 dark:text-neutral-500 mb-4"
+            className="mb-4 text-sm font-bold uppercase tracking-[0.25em] text-cyan-200/80"
           >
             Achievements
           </motion.p>
@@ -192,7 +211,7 @@ export const Achievements: React.FC = () => {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.5, delay: 0.04 }}
-            className="text-4xl font-bold tracking-tight text-gray-900 dark:text-white mb-4"
+            className="mb-4 text-4xl font-bold tracking-tight text-white"
           >
             Milestones that reflect delivery, growth, and measurable results.
           </motion.h2>
@@ -201,7 +220,7 @@ export const Achievements: React.FC = () => {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.5, delay: 0.08 }}
-            className="text-lg text-gray-500 dark:text-neutral-400"
+            className="text-lg text-slate-300/82"
           >
             A few concise highlights that help round out the portfolio story beyond the project gallery.
           </motion.p>
@@ -218,16 +237,16 @@ export const Achievements: React.FC = () => {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.45, delay: index * 0.08 }}
-                className="rounded-3xl border border-gray-100 dark:border-neutral-800 bg-gray-50 dark:bg-neutral-900 p-8 shadow-sm"
+                className="rounded-3xl border border-white/10 bg-white/8 p-8 shadow-[0_20px_70px_rgba(0,0,0,0.24)] backdrop-blur-xl"
               >
-                <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-white dark:bg-neutral-800 border border-gray-100 dark:border-neutral-700 mb-6">
-                  <Icon className="w-6 h-6 text-gray-900 dark:text-white" />
+                <div className="mb-6 flex h-14 w-14 items-center justify-center rounded-2xl border border-white/12 bg-white/10">
+                  <Icon className="h-6 w-6 text-white" />
                 </div>
-                <p className="text-sm font-bold uppercase tracking-[0.18em] text-gray-400 dark:text-neutral-500 mb-3">
+                <p className="mb-3 text-sm font-bold uppercase tracking-[0.18em] text-cyan-100/70">
                   {achievement.title}
                 </p>
-                <p className="text-4xl font-bold text-gray-900 dark:text-white mb-4">{achievement.value}</p>
-                <p className="text-base leading-relaxed text-gray-500 dark:text-neutral-400">
+                <p className="mb-4 text-4xl font-bold text-white">{achievement.value}</p>
+                <p className="text-base leading-relaxed text-slate-300/82">
                   {achievement.description}
                 </p>
               </motion.article>
@@ -235,44 +254,64 @@ export const Achievements: React.FC = () => {
           })}
         </div>
 
-        <div className="mt-20">
-          <motion.div
-            initial={{ opacity: 0, y: 18 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.45 }}
-            className="mb-10 text-center"
-          >
-            <p className="mb-3 text-sm font-bold uppercase tracking-[0.24em] text-emerald-600 dark:text-emerald-400">
-              School Achievements
-            </p>
-            <h3 className="text-3xl font-bold tracking-tight text-gray-900 dark:text-white">
-              Ten sample lanyards for awards, milestones, and campus highlights.
-            </h3>
-          </motion.div>
+        <div className="relative mt-20 overflow-hidden rounded-[2rem] border border-white/10 bg-white/[0.04] px-5 py-10 shadow-[0_24px_90px_rgba(0,0,0,0.28)] backdrop-blur-[8px] sm:px-8 lg:px-10">
+          <div className="absolute inset-0 z-0">
+            <Particles
+              className="opacity-75"
+              particleColors={['#f8fafc', '#86efac', '#93c5fd', '#c4b5fd']}
+              particleCount={160}
+              particleSpread={8}
+              speed={0.06}
+              particleBaseSize={80}
+              moveParticlesOnHover={true}
+              particleHoverFactor={0.18}
+              alphaParticles={true}
+              sizeRandomness={0.9}
+              cameraDistance={16}
+              pixelRatio={1}
+            />
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(134,239,172,0.08),transparent_26%),linear-gradient(180deg,rgba(255,255,255,0.03),rgba(255,255,255,0.01))]" />
+          </div>
 
-          <div className="grid gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-5">
-            {schoolAchievements.map((achievement, index) => (
-              <motion.div
-                key={achievement.id}
-                initial={{ opacity: 0, y: 24 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, amount: 0.2 }}
-                transition={{ duration: 0.45, delay: index * 0.04 }}
-              >
-                <Lanyard
-                  title={achievement.title}
-                  subtitle={achievement.subtitle}
-                  year={achievement.year}
-                  tag={achievement.tag}
-                  accentFrom={achievement.accentFrom}
-                  accentTo={achievement.accentTo}
-                  position={[index % 2 === 0 ? -4 : 4, 0, 20]}
-                  gravity={[0, -40 - (index % 3) * 2, 0]}
-                  onClick={() => setSelectedLanyardId(achievement.id)}
-                />
-              </motion.div>
-            ))}
+          <div className="relative z-10">
+            <motion.div
+              initial={{ opacity: 0, y: 18 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.45 }}
+              className="mb-10 text-center"
+            >
+              <p className="mb-3 text-sm font-bold uppercase tracking-[0.24em] text-emerald-300/88">
+                School Achievements
+              </p>
+              <h3 className="text-3xl font-bold tracking-tight text-white">
+                Ten sample lanyards for awards, milestones, and campus highlights.
+              </h3>
+            </motion.div>
+
+            <div className="grid gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-5">
+              {schoolAchievements.map((achievement, index) => (
+                <motion.div
+                  key={achievement.id}
+                  initial={{ opacity: 0, y: 24 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true, amount: 0.2 }}
+                  transition={{ duration: 0.45, delay: index * 0.04 }}
+                >
+                  <Lanyard
+                    title={achievement.title}
+                    subtitle={achievement.subtitle}
+                    year={achievement.year}
+                    tag={achievement.tag}
+                    accentFrom={achievement.accentFrom}
+                    accentTo={achievement.accentTo}
+                    position={[index % 2 === 0 ? -4 : 4, 0, 20]}
+                    gravity={[0, -40 - (index % 3) * 2, 0]}
+                    onClick={() => setSelectedLanyardId(achievement.id)}
+                  />
+                </motion.div>
+              ))}
+            </div>
           </div>
         </div>
       </div>
@@ -297,7 +336,7 @@ export const Achievements: React.FC = () => {
               <div className="mb-6 flex items-start justify-between gap-4">
                 <div>
                   <p className="mb-3 text-xs font-bold uppercase tracking-[0.24em] text-emerald-600 dark:text-emerald-400">
-                    {selectedLanyard.tag} • {selectedLanyard.year}
+                    {selectedLanyard.tag} / {selectedLanyard.year}
                   </p>
                   <h4 className="text-3xl font-bold tracking-tight text-gray-900 dark:text-white">
                     {selectedLanyard.title}
