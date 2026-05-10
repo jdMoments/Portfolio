@@ -1,0 +1,12 @@
+.liquid-ether-container {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.liquid-ether-container canvas {
+  display: block;
+  width: 100% !important;
+  height: 100% !important;
+}

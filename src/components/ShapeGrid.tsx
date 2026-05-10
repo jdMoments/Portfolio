@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import React, { useEffect, useRef } from 'react';
 import './ShapeGrid.css';
 
 type GridDirection = 'right' | 'left' | 'up' | 'down' | 'diagonal';

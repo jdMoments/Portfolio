@@ -4,6 +4,7 @@ import { ProjectCard } from '../components/ProjectCard';
 import { motion, AnimatePresence } from 'motion/react';
 import MagicBento, { MagicBentoItem } from '../components/MagicBento';
 import { ArrowLeft, Github } from 'lucide-react';
+import LiquidEther from '../components/LiquidEther';
 
 const PROJECT_REVEAL_DELAY_MS = 1500;
 const PROJECT_RETURN_DELAY_MS = 10000;
@@ -198,7 +199,25 @@ export const Projects: React.FC = () => {
       } bg-[#02030a]`}
     >
       <div className="absolute inset-0 z-0">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(22,163,74,0.12),transparent_34%),linear-gradient(180deg,rgba(2,6,23,0.82),rgba(2,6,23,0.94))]" />
+        <LiquidEther
+          className="absolute inset-0 opacity-90"
+          colors={['#5227FF', '#FF9FFC', '#B497CF']}
+          mouseForce={28}
+          cursorSize={120}
+          isViscous
+          viscous={30}
+          iterationsViscous={32}
+          iterationsPoisson={32}
+          resolution={0.5}
+          isBounce={false}
+          autoDemo={false}
+          autoSpeed={0.5}
+          autoIntensity={2.2}
+          takeoverDuration={0.25}
+          autoResumeDelay={1000}
+          autoRampDuration={0.6}
+        />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_18%_18%,rgba(82,39,255,0.18),transparent_34%),radial-gradient(circle_at_82%_24%,rgba(255,159,252,0.14),transparent_32%),linear-gradient(180deg,rgba(2,6,23,0.72),rgba(2,6,23,0.9))]" />
       </div>
 
       <div className="absolute inset-0 z-[1] pointer-events-none">

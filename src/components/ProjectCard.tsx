@@ -1,6 +1,6 @@
 import React from 'react';
 import { Project } from '../types';
-import { ExternalLink } from 'lucide-react';
+import { ExternalLink, Github } from 'lucide-react';
 import { motion } from 'motion/react';
 
 interface ProjectCardProps {
@@ -113,7 +113,7 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
             </span>
           ))}
         </div>
-        <div className="mt-auto pt-4 border-t border-gray-50 dark:border-neutral-800">
+        <div className="mt-auto flex items-center justify-between gap-3 pt-4 border-t border-gray-50 dark:border-neutral-800">
           <a
             href={project.deployedUrl}
             target="_blank"
@@ -122,6 +122,17 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
           >
             View Project <ExternalLink className="ml-2 w-4 h-4" />
           </a>
+          {project.githubUrl && (
+            <a
+              href={project.githubUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-gray-200 text-gray-700 transition hover:border-black hover:text-black dark:border-neutral-700 dark:text-neutral-300 dark:hover:border-white dark:hover:text-white"
+              aria-label={`Open ${project.title} GitHub repository`}
+            >
+              <Github className="h-4 w-4" />
+            </a>
+          )}
         </div>
       </div>
     </motion.div>
