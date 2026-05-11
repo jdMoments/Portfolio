@@ -3,7 +3,7 @@ import { projects } from '../data/projects';
 import { ProjectCard } from '../components/ProjectCard';
 import { motion, AnimatePresence } from 'motion/react';
 import MagicBento, { MagicBentoItem } from '../components/MagicBento';
-import { ArrowLeft, Github } from 'lucide-react';
+import { ArrowLeft, Github, Minus, Plus } from 'lucide-react';
 import LiquidEther from '../components/LiquidEther';
 
 const PROJECT_REVEAL_DELAY_MS = 1500;
@@ -13,6 +13,7 @@ const PROJECT_VIEWPORT_TOP_SHIFT = 0;
 export const Projects: React.FC = () => {
   const MIN_BENTO_VISIBLE = 2;
   const [activeProjectId, setActiveProjectId] = useState<string | null>(null);
+  const [isProjectDetailsVisible, setIsProjectDetailsVisible] = useState(true);
   const [pulseToken, setPulseToken] = useState(0);
   const [showMagicBento, setShowMagicBento] = useState(false);
   const [bentoProjectIds, setBentoProjectIds] = useState<string[]>([]);
@@ -58,6 +59,7 @@ export const Projects: React.FC = () => {
     clearSelectionTimer();
     clearAutoReturnTimer();
     setPendingProjectId(null);
+    setIsProjectDetailsVisible(false);
     setShowMagicBento(false);
     setBentoProjectIds([]);
     setActiveProjectId(null);
@@ -139,6 +141,7 @@ export const Projects: React.FC = () => {
 
     selectionTimerRef.current = window.setTimeout(() => {
       setActiveProjectId(id);
+      setIsProjectDetailsVisible(false);
       setPulseToken((prev) => prev + 1);
 
       setBentoProjectIds((prev) => {
@@ -250,43 +253,57 @@ export const Projects: React.FC = () => {
           activeProject ? 'flex h-full flex-col justify-between' : ''
         }`}
       >
+        {activeProject && (
+          <div className="mb-5 flex justify-start gap-3 md:-ml-[100px] lg:mb-6">
+            <button
+              type="button"
+              onClick={closeActiveProject}
+              className="inline-flex items-center gap-2 self-start rounded-full border border-white/30 bg-black/25 px-4 py-2 text-sm font-semibold text-white backdrop-blur-sm transition hover:bg-black/35"
+            >
+              <ArrowLeft className="h-4 w-4" />
+              Back to projects
+            </button>
+
+            <button
+              type="button"
+              onClick={() => setIsProjectDetailsVisible((current) => !current)}
+              className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-white/30 bg-black/25 text-white backdrop-blur-sm transition hover:bg-black/35"
+              aria-label={isProjectDetailsVisible ? 'Hide project details' : 'Show project details'}
+            >
+              {isProjectDetailsVisible ? <Minus className="h-5 w-5" /> : <Plus className="h-5 w-5" />}
+            </button>
+          </div>
+        )}
+
         <div className={`${activeProject ? 'mb-6 lg:mb-8' : 'mb-16'}`}>
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5 }}
-            className={activeProject ? 'max-w-fit rounded-3xl border border-white/12 bg-black/12 px-5 py-5 backdrop-blur-[3px] sm:px-6' : ''}
-          >
-            {activeProject && (
-              <button
-                type="button"
-                onClick={closeActiveProject}
-                className="mb-4 inline-flex items-center gap-2 self-start rounded-full border border-white/30 bg-black/25 px-4 py-2 text-sm font-semibold text-white backdrop-blur-sm transition hover:bg-black/35"
+          {(!activeProject || isProjectDetailsVisible) && (
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5 }}
+              className={activeProject ? 'max-w-fit rounded-3xl border border-white/12 bg-black/12 px-5 py-5 backdrop-blur-[3px] sm:px-6' : ''}
+            >
+              <h2
+                className={`text-4xl font-bold tracking-tight mb-4 transition-colors duration-500 ${
+                  activeProject ? activeTitleClassName : 'text-white'
+                }`}
               >
-                <ArrowLeft className="h-4 w-4" />
-                Back to projects
-              </button>
-            )}
-            <h2
-              className={`text-4xl font-bold tracking-tight mb-4 transition-colors duration-500 ${
-                activeProject ? activeTitleClassName : 'text-white'
-              }`}
-            >
-              {activeProject ? activeProject.title : 'My Projects'}
-            </h2>
-            <p
-              className={`text-lg max-w-2xl transition-colors duration-500 ${
-                activeProject
-                  ? 'max-w-[66rem] text-base leading-7 text-gray-100/90 lg:text-[1rem]'
-                  : 'max-w-full whitespace-nowrap text-base text-gray-300 lg:text-lg'
-              }`}
-            >
-              {activeProject
-                ? activeProject.description
-                : 'A collection of some of my favorite works, ranging from complex web applications to experimental UI explorations.'}
-            </p>
-          </motion.div>
+                {activeProject ? activeProject.title : 'My Projects'}
+              </h2>
+              <p
+                className={`text-lg max-w-2xl transition-colors duration-500 ${
+                  activeProject
+                    ? 'max-w-[66rem] text-base leading-7 text-gray-100/90 lg:text-[1rem]'
+                    : 'max-w-full whitespace-nowrap text-base text-gray-300 lg:text-lg'
+                }`}
+              >
+                {activeProject
+                  ? activeProject.description
+                  : 'A collection of some of my favorite works, ranging from complex web applications to experimental UI explorations.'}
+              </p>
+            </motion.div>
+          )}
         </div>
 
         {!activeProject && (
@@ -316,45 +333,49 @@ export const Projects: React.FC = () => {
         {activeProject && (
           <div className="grid min-h-0 flex-1 grid-cols-1 items-end gap-5 lg:grid-cols-[minmax(0,1fr)_500px] lg:gap-7">
             <AnimatePresence mode="wait">
-              <motion.div
-                key={activeProject.id}
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -10 }}
-                transition={{ duration: 0.45, delay: 0.08 }}
-                className="rounded-3xl border border-white/12 bg-black/14 px-5 py-5 text-left backdrop-blur-[4px] lg:max-w-3xl lg:self-end lg:pr-4 sm:px-6"
-              >
-                {activeProject.role && (
-                  <p className="mb-4 text-sm font-medium text-emerald-300/95">
-                    Role: <span className="text-white">{activeProject.role}</span>
-                  </p>
-                )}
-                <div className="mt-2 flex flex-wrap gap-3">
-                  {activeProject.technologies.map((tech) => (
-                    <span
-                      key={tech}
-                      className="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider text-white border border-white/35 bg-white/10"
-                    >
-                      {tech}
-                    </span>
-                  ))}
-                </div>
+              {isProjectDetailsVisible ? (
+                <motion.div
+                  key={activeProject.id}
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -10 }}
+                  transition={{ duration: 0.45, delay: 0.08 }}
+                  className="rounded-3xl border border-white/12 bg-black/14 px-5 py-5 text-left backdrop-blur-[4px] lg:max-w-3xl lg:self-end lg:pr-4 sm:px-6"
+                >
+                  {activeProject.role && (
+                    <p className="mb-4 text-sm font-medium text-emerald-300/95">
+                      Role: <span className="text-white">{activeProject.role}</span>
+                    </p>
+                  )}
+                  <div className="mt-2 flex flex-wrap gap-3">
+                    {activeProject.technologies.map((tech) => (
+                      <span
+                        key={tech}
+                        className="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider text-white border border-white/35 bg-white/10"
+                      >
+                        {tech}
+                      </span>
+                    ))}
+                  </div>
 
-                {activeProject.githubUrl && (
-                  <motion.a
-                    href={activeProject.githubUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    whileHover={{ scale: 1.12 }}
-                    whileTap={{ scale: 0.96 }}
-                    transition={{ type: 'spring', stiffness: 320, damping: 20 }}
-                    className="mt-5 inline-flex items-center justify-center w-11 h-11 rounded-full border border-white/35 bg-white/10 text-white hover:bg-white/20"
-                    aria-label={`Open ${activeProject.title} GitHub repository`}
-                  >
-                    <Github className="w-5 h-5" />
-                  </motion.a>
-                )}
-              </motion.div>
+                  {activeProject.githubUrl && (
+                    <motion.a
+                      href={activeProject.githubUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      whileHover={{ scale: 1.12 }}
+                      whileTap={{ scale: 0.96 }}
+                      transition={{ type: 'spring', stiffness: 320, damping: 20 }}
+                      className="mt-5 inline-flex h-11 w-11 items-center justify-center rounded-full border border-white/35 bg-white/10 text-white hover:bg-white/20"
+                      aria-label={`Open ${activeProject.title} GitHub repository`}
+                    >
+                      <Github className="w-5 h-5" />
+                    </motion.a>
+                  )}
+                </motion.div>
+              ) : (
+                <div className="hidden lg:block" />
+              )}
             </AnimatePresence>
 
             <AnimatePresence>

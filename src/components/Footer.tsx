@@ -28,7 +28,7 @@ export const Footer: React.FC = () => {
           <div className="col-span-1 md:col-span-2">
             <div className="flex items-center space-x-2 mb-6">
               <Code2 className="w-8 h-8 text-white" />
-              <span className="font-bold text-xl tracking-tight text-white">DEV.PORTFOLIO</span>
+              <span className="font-bold text-xl tracking-tight text-white">MY PORTFOLIO</span>
             </div>
             <p className="max-w-sm leading-relaxed text-slate-300/82">
               Crafting high-quality software solutions with a focus on user experience, performance, and scalability. Let's build something amazing together.
@@ -72,7 +72,7 @@ export const Footer: React.FC = () => {
         </div>
         
         <div className="flex flex-col items-center justify-between border-t border-white/10 pt-8 text-sm text-slate-400 md:flex-row">
-          <p>© {new Date().getFullYear()} Dev Portfolio. All rights reserved.</p>
+          <p>© {new Date().getFullYear()} Jholmer L. Damayo. All rights reserved.</p>
           <div className="flex space-x-6 mt-4 md:mt-0">
             <a href="#" className="transition-colors hover:text-white">Privacy Policy</a>
             <a href="#" className="transition-colors hover:text-white">Terms of Service</a>

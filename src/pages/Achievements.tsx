@@ -326,12 +326,12 @@ export const Achievements: React.FC<AchievementsProps> = ({ onNavigateToProjects
                 School Achievements
               </p>
               <h3 className="text-3xl font-bold tracking-tight text-white">
-                Nine sample lanyards for awards, milestones, and campus highlights.
+                Five sample lanyards for awards, milestones, and campus highlights.
               </h3>
             </motion.div>
 
             <div className="grid gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-5">
-              {schoolAchievements.map((achievement, index) => (
+              {schoolAchievements.slice(0, 5).map((achievement, index) => (
                 <motion.div
                   key={achievement.id}
                   initial={{ opacity: 0, y: 24 }}
