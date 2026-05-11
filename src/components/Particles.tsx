@@ -122,6 +122,8 @@ const Particles = ({
 }: ParticlesProps) => {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const mouseRef = useRef({ x: 0, y: 0 });
+  const frameRef = useRef(0);
+  const visibleRef = useRef(true);
 
   useEffect(() => {
     const container = containerRef.current;
@@ -168,9 +170,6 @@ const Particles = ({
     const handlePointerLeave = () => {
       mouseRef.current = { x: 0, y: 0 };
     };
-
-    window.addEventListener('resize', resize, false);
-    resize();
 
     if (moveParticlesOnHover) {
       window.addEventListener('pointermove', handlePointerMove);
@@ -229,12 +228,17 @@ const Particles = ({
 
     const particles = new Mesh(gl, { mode: gl.POINTS, geometry, program });
 
-    let animationFrameId = 0;
+    let resizeFrameId = 0;
     let lastTime = performance.now();
     let elapsed = 0;
 
     const update = (time: number) => {
-      animationFrameId = window.requestAnimationFrame(update);
+      frameRef.current = window.requestAnimationFrame(update);
+
+      if (document.hidden || !visibleRef.current) {
+        return;
+      }
+
       const delta = time - lastTime;
       lastTime = time;
       elapsed += delta * speed;
@@ -258,17 +262,83 @@ const Particles = ({
       renderer.render({ scene: particles, camera });
     };
 
-    animationFrameId = window.requestAnimationFrame(update);
+    const requestResize = () => {
+      if (resizeFrameId) {
+        return;
+      }
+
+      resizeFrameId = window.requestAnimationFrame(() => {
+        resizeFrameId = 0;
+        resize();
+      });
+    };
+
+    const stop = () => {
+      if (frameRef.current) {
+        window.cancelAnimationFrame(frameRef.current);
+        frameRef.current = 0;
+      }
+    };
+
+    const start = () => {
+      if (frameRef.current) {
+        return;
+      }
+
+      lastTime = performance.now();
+      frameRef.current = window.requestAnimationFrame(update);
+    };
+
+    const syncPlayback = () => {
+      if (document.hidden || !visibleRef.current) {
+        stop();
+        return;
+      }
+
+      start();
+    };
+
+    const handleVisibilityChange = () => {
+      syncPlayback();
+    };
+
+    const intersectionObserver = new IntersectionObserver(
+      (entries) => {
+        const entry = entries[0];
+        visibleRef.current = entry.isIntersecting || entry.intersectionRatio > 0;
+        syncPlayback();
+      },
+      { threshold: [0, 0.01], rootMargin: '180px 0px' }
+    );
+
+    const resizeObserver = new ResizeObserver(() => {
+      requestResize();
+    });
+
+    intersectionObserver.observe(container);
+    resizeObserver.observe(container);
+    window.addEventListener('resize', requestResize, false);
+    resize();
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+    renderer.render({ scene: particles, camera });
+    syncPlayback();
 
     return () => {
-      window.removeEventListener('resize', resize);
+      stop();
+      intersectionObserver.disconnect();
+      resizeObserver.disconnect();
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+
+      if (resizeFrameId) {
+        window.cancelAnimationFrame(resizeFrameId);
+      }
+
+      window.removeEventListener('resize', requestResize);
 
       if (moveParticlesOnHover) {
         window.removeEventListener('pointermove', handlePointerMove);
         window.removeEventListener('pointerout', handlePointerLeave);
       }
-
-      window.cancelAnimationFrame(animationFrameId);
 
       geometry.remove();
       program.remove();

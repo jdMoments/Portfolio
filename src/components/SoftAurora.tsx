@@ -179,6 +179,8 @@ export default function SoftAurora({
   mouseInfluence = 0.25
 }: SoftAuroraProps) {
   const containerRef = useRef<HTMLDivElement | null>(null);
+  const frameRef = useRef(0);
+  const visibleRef = useRef(true);
 
   useEffect(() => {
     const container = containerRef.current;
@@ -186,13 +188,18 @@ export default function SoftAurora({
       return;
     }
 
-    const renderer = new Renderer({ alpha: true, premultipliedAlpha: false });
+    const renderer = new Renderer({
+      alpha: true,
+      premultipliedAlpha: false,
+      dpr: Math.min(window.devicePixelRatio || 1, 1.25)
+    });
     const gl = renderer.gl;
     gl.clearColor(0, 0, 0, 0);
 
     let program: Program | undefined;
     let currentMouse = [0.5, 0.5];
     let targetMouse = [0.5, 0.5];
+    let resizeFrameId = 0;
 
     const handleMouseMove = (event: MouseEvent) => {
       const rect = gl.canvas.getBoundingClientRect();
@@ -217,8 +224,16 @@ export default function SoftAurora({
       }
     };
 
-    window.addEventListener('resize', resize);
-    resize();
+    const requestResize = () => {
+      if (resizeFrameId) {
+        return;
+      }
+
+      resizeFrameId = window.requestAnimationFrame(() => {
+        resizeFrameId = 0;
+        resize();
+      });
+    };
 
     const geometry = new Triangle(gl);
     program = new Program(gl, {
@@ -255,11 +270,13 @@ export default function SoftAurora({
       gl.canvas.addEventListener('mouseleave', handleMouseLeave);
     }
 
-    let animationFrameId = 0;
-
-    const update = (time: number) => {
-      animationFrameId = window.requestAnimationFrame(update);
+    const renderFrame = (time: number) => {
+      frameRef.current = window.requestAnimationFrame(renderFrame);
       if (!program) {
+        return;
+      }
+
+      if (document.hidden || !visibleRef.current) {
         return;
       }
 
@@ -278,11 +295,65 @@ export default function SoftAurora({
       renderer.render({ scene: mesh });
     };
 
-    animationFrameId = window.requestAnimationFrame(update);
+    const stop = () => {
+      if (frameRef.current) {
+        window.cancelAnimationFrame(frameRef.current);
+        frameRef.current = 0;
+      }
+    };
+
+    const start = () => {
+      if (frameRef.current) {
+        return;
+      }
+
+      frameRef.current = window.requestAnimationFrame(renderFrame);
+    };
+
+    const syncPlayback = () => {
+      if (document.hidden || !visibleRef.current) {
+        stop();
+        return;
+      }
+
+      start();
+    };
+
+    const handleVisibilityChange = () => {
+      syncPlayback();
+    };
+
+    const intersectionObserver = new IntersectionObserver(
+      (entries) => {
+        const entry = entries[0];
+        visibleRef.current = entry.isIntersecting || entry.intersectionRatio > 0;
+        syncPlayback();
+      },
+      { threshold: [0, 0.01], rootMargin: '180px 0px' }
+    );
+
+    const resizeObserver = new ResizeObserver(() => {
+      requestResize();
+    });
+
+    intersectionObserver.observe(container);
+    resizeObserver.observe(container);
+    window.addEventListener('resize', requestResize);
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+    resize();
+    renderer.render({ scene: mesh });
+    syncPlayback();
 
     return () => {
-      window.cancelAnimationFrame(animationFrameId);
-      window.removeEventListener('resize', resize);
+      stop();
+      intersectionObserver.disconnect();
+      resizeObserver.disconnect();
+      window.removeEventListener('resize', requestResize);
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+
+      if (resizeFrameId) {
+        window.cancelAnimationFrame(resizeFrameId);
+      }
 
       if (enableMouseInteraction) {
         gl.canvas.removeEventListener('mousemove', handleMouseMove);

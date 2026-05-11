@@ -206,9 +206,9 @@ export const Projects: React.FC = () => {
           cursorSize={120}
           isViscous
           viscous={30}
-          iterationsViscous={32}
-          iterationsPoisson={32}
-          resolution={0.5}
+          iterationsViscous={24}
+          iterationsPoisson={24}
+          resolution={0.38}
           isBounce={false}
           autoDemo={false}
           autoSpeed={0.5}

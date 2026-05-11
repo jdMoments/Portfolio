@@ -7,18 +7,40 @@ import { Achievements } from './pages/Achievements';
 import { About } from './pages/About';
 import { Contact } from './pages/Contact';
 import { Footer } from './components/Footer';
+import { LoadingScreen } from './components/LoadingScreen';
 import { NavItem } from './types';
 import { motion } from 'motion/react';
+import { useStartupPreload } from './hooks/useStartupPreload';
+import { projects } from './data/projects';
+import heroBackgroundImage from './assets/hero-background-sample.png';
+import portraitImage from './assets/jholmer-portrait.png';
+import seniorDeveloperPreview from './assets/experience-senior-dev.png';
+import fullStackDeveloperPreview from './assets/experience-full-stack.png';
+import frontendEngineerPreview from './assets/experience-frontend-engineer.png';
 
 export default function App() {
   const [activeSection, setActiveSection] = React.useState<NavItem>('home');
   const [isDarkMode, setIsDarkMode] = React.useState(false);
   const [heroTransitionProgress, setHeroTransitionProgress] = React.useState(0);
+  const [showLoadingScreen, setShowLoadingScreen] = React.useState(true);
   const isAutoScrollingRef = React.useRef(false);
   const scrollAnimationFrameRef = React.useRef<number | null>(null);
   const scrollReleaseTimeoutRef = React.useRef<number | null>(null);
   const homeSectionRef = React.useRef<HTMLDivElement | null>(null);
   const projectsSectionRef = React.useRef<HTMLDivElement | null>(null);
+  const startupAssets = React.useMemo(
+    () => [
+      heroBackgroundImage,
+      portraitImage,
+      seniorDeveloperPreview,
+      fullStackDeveloperPreview,
+      frontendEngineerPreview,
+      ...projects.map((project) => project.image)
+    ],
+    []
+  );
+  const { isReady: isStartupReady, progress: startupProgress } =
+    useStartupPreload(startupAssets);
 
   // Toggle dark mode
   const toggleDarkMode = () => {
@@ -33,6 +55,26 @@ export default function App() {
       document.documentElement.classList.remove('dark');
     }
   }, [isDarkMode]);
+
+  React.useEffect(() => {
+    document.documentElement.classList.toggle('portfolio-loading', showLoadingScreen);
+
+    return () => {
+      document.documentElement.classList.remove('portfolio-loading');
+    };
+  }, [showLoadingScreen]);
+
+  React.useEffect(() => {
+    if (!isStartupReady) {
+      return;
+    }
+
+    const timeoutId = window.setTimeout(() => {
+      setShowLoadingScreen(false);
+    }, 420);
+
+    return () => window.clearTimeout(timeoutId);
+  }, [isStartupReady]);
 
   const stopAutoScroll = React.useCallback(() => {
     if (scrollAnimationFrameRef.current !== null) {
@@ -124,7 +166,7 @@ export default function App() {
       }
     };
 
-    window.addEventListener('scroll', handleScroll);
+    window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
@@ -203,6 +245,10 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-white dark:bg-neutral-950 font-sans text-gray-900 dark:text-neutral-100 selection:bg-black dark:selection:bg-white selection:text-white dark:selection:text-black transition-colors duration-300">
+      {showLoadingScreen && (
+        <LoadingScreen isReady={isStartupReady} progress={startupProgress} />
+      )}
+
       <Navbar 
         activeSection={activeSection} 
         onNavigate={navigateToSection}
@@ -246,7 +292,7 @@ export default function App() {
           variants={sectionReveal}
           initial="hidden"
           whileInView="visible"
-          viewport={{ once: false, amount: 0.22 }}
+          viewport={{ once: true, amount: 0.22 }}
           custom={0.14}
         >
           <Experience />
@@ -257,7 +303,7 @@ export default function App() {
           variants={sectionReveal}
           initial="hidden"
           whileInView="visible"
-          viewport={{ once: false, amount: 0.22 }}
+          viewport={{ once: true, amount: 0.22 }}
           custom={0.17}
         >
           <Achievements />
@@ -268,7 +314,7 @@ export default function App() {
           variants={sectionReveal}
           initial="hidden"
           whileInView="visible"
-          viewport={{ once: false, amount: 0.22 }}
+          viewport={{ once: true, amount: 0.22 }}
           custom={0.19}
         >
           <About />
@@ -279,7 +325,7 @@ export default function App() {
           variants={sectionReveal}
           initial="hidden"
           whileInView="visible"
-          viewport={{ once: false, amount: 0.22 }}
+          viewport={{ once: true, amount: 0.22 }}
           custom={0.2}
         >
           <Contact />
