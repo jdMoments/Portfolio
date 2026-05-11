@@ -22,8 +22,15 @@ const waitForPaint = () =>
 
 const waitForIdle = () =>
   new Promise<void>((resolve) => {
-    if ('requestIdleCallback' in window) {
-      window.requestIdleCallback(() => resolve(), { timeout: 600 });
+    const idleWindow = window as Window & {
+      requestIdleCallback?: (
+        callback: IdleRequestCallback,
+        options?: IdleRequestOptions
+      ) => number;
+    };
+
+    if (idleWindow.requestIdleCallback) {
+      idleWindow.requestIdleCallback(() => resolve(), { timeout: 600 });
       return;
     }
 

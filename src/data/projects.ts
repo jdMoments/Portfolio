@@ -1,4 +1,5 @@
 import { Project } from '../types';
+import heroBackgroundImage from '../assets/hero-background-sample.png';
 import lifewoodDataTechnologyImage from '../assets/lifewood-data-technology.png';
 import rmClothingProjectImage from '../assets/rm-clothing-project.png';
 import reviewerProjectImage from '../assets/reviewer-project.png';
@@ -52,18 +53,10 @@ export const projects: Project[] = [
     id: '5',
     title: 'Portfolio',
     description: 'Portfolio is a personal showcase website built to present projects, skills, and creative work in a polished and easy-to-navigate format. The experience focuses on strong visual presentation, smooth section flow, and responsive layouts that make the work feel professional across devices. Building it required careful attention to layout structure, styling consistency, and turning personal work into a cohesive digital brand.',
-    image: 'https://picsum.photos/seed/fitness/800/600',
+    image: heroBackgroundImage,
     backgroundPosition: 'center center',
     deployedUrl: 'https://portfolio-jholmer.vercel.app/',
     githubUrl: 'https://github.com/JholmerDamayo/Portfolio',
     technologies: ['React', 'Vite', 'HTML', 'CSS'],
-  },
-  {
-    id: '6',
-    title: 'Portfolio Website',
-    description: 'Portfolio Website is a modern template built to showcase projects, skills, and professional identity in one place. It features strong visual hierarchy, responsive sections, and smooth interactions for better presentation quality. Developers can use it to communicate their work clearly to recruiters, clients, or collaborators. The main concept is to blend personal branding with usability and performance.',
-    image: 'https://picsum.photos/seed/portfolio/800/600',
-    deployedUrl: 'https://example.com',
-    technologies: ['React', 'Tailwind CSS', 'Motion'],
   },
 ];

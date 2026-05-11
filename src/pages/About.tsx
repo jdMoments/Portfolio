@@ -71,13 +71,13 @@ export const About: React.FC = () => {
               <h2 className="mb-8 text-4xl font-bold tracking-tight text-white">About Me</h2>
               <div className="space-y-6 text-lg leading-relaxed text-slate-200/88">
                 <p>
-                  I'm a self-taught developer with a passion for building products that solve real-world problems. With over 5 years of experience in the industry, I've worked with startups and established companies to deliver high-quality software.
+                  I’m Jholmer L. Damayo, a fresh graduating Bachelor of Science in Information Technology student with a strong passion for software development and technology. I enjoy building systems and applications that solve real-world problems while improving user experience and functionality.
                 </p>
                 <p>
-                  My approach is centered around clean code, user-centric design, and continuous learning. I believe that the best software is not just functional, but also intuitive and delightful to use.
+                  My journey in IT has helped me develop skills in web and mobile development, UI/UX design, database management, and problem-solving. I am continuously learning new technologies and improving my craft through personal projects, academic work, and hands-on experience.
                 </p>
                 <p>
-                  When I'm not coding, you can find me hiking in the mountains, reading about new technologies, or contributing to open-source projects.
+                  Beyond coding, I enjoy exploring new tech trends, creating creative digital projects, and collaborating with others to turn ideas into meaningful solutions.
                 </p>
               </div>
             </div>

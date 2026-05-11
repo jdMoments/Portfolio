@@ -10,12 +10,12 @@ const roles = [
   {
     id: 'senior-frontend-developer',
     period: '2023 - 2025',
-    title: 'Senior Frontend Developer',
+    title: 'Prompt Engineering',
     description:
-      'Leading polished web experiences, component systems, and performance improvements across client-facing products.',
+      'Designing structured prompts, workflow logic, and AI-assisted outputs that improve response quality, consistency, and task completion across practical use cases.',
     previewImage: seniorDeveloperPreview,
-    previewLabel: 'Senior Frontend Developer',
-    previewNote: 'Design systems, refined interfaces, and production-ready frontend delivery.'
+    previewLabel: 'Prompt Engineering',
+    previewNote: 'Prompt strategy, context design, and higher-quality AI responses for real project workflows.'
   },
   {
     id: 'full-stack-developer',
@@ -29,7 +29,7 @@ const roles = [
   },
   {
     id: 'frontend-engineer',
-    period: '2025',
+    period: '2026',
     title: 'Frontend Engineer',
     description:
       'Delivered responsive interfaces, design handoff support, and reusable UI foundations for internal tools and marketing sites.',

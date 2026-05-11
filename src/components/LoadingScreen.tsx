@@ -19,15 +19,6 @@ export const LoadingScreen: React.FC<LoadingScreenProps> = ({ isReady, progress 
       <div className="portfolio-loader__backdrop" />
 
       <div className="portfolio-loader__content">
-        <motion.p
-          initial={{ opacity: 0, y: 18 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-          className="portfolio-loader__eyebrow"
-        >
-          Rendering Portfolio
-        </motion.p>
-
         <motion.h1
           initial={{ opacity: 0, y: 26 }}
           animate={{ opacity: 1, y: 0 }}
@@ -43,11 +34,6 @@ export const LoadingScreen: React.FC<LoadingScreenProps> = ({ isReady, progress 
             animate={{ width: `${progress}%` }}
             transition={{ duration: 0.35, ease: 'easeOut' }}
           />
-        </div>
-
-        <div className="portfolio-loader__meta">
-          <span>{progress}%</span>
-          <span>{isReady ? 'Ready to explore' : 'Preparing images, motion, and backgrounds'}</span>
         </div>
       </div>
     </motion.div>

@@ -1,29 +1,37 @@
 import React from 'react';
-import { AnimatePresence, motion } from 'motion/react';
+import { AnimatePresence, motion, useInView } from 'motion/react';
 import { Award, Rocket, Trophy, X } from 'lucide-react';
+import CountUp from '../components/CountUp';
 import Lanyard from '../components/Lanyard';
 import Particles from '../components/Particles';
 
 const achievements = [
   {
     icon: Trophy,
-    title: 'Product Launches',
-    value: '12+',
-    description: 'Shipped websites, dashboards, and internal platforms from idea to release.'
+    title: 'Project Finished',
+    value: 10,
+    description: 'Completed 10 projects across portfolio builds, app concepts, and polished frontend experiences.',
+    action: 'projects'
   },
   {
     icon: Rocket,
-    title: 'Performance Wins',
-    value: '40%',
-    description: 'Improved load times and interaction responsiveness on key client experiences.'
+    title: 'Performance',
+    value: 95,
+    suffix: '%',
+    description: 'Focused on fast loading, smoother interactions, and stronger overall frontend responsiveness.'
   },
   {
     icon: Award,
-    title: 'Team Impact',
-    value: '5 yrs',
-    description: 'Supported design systems, mentoring, and cross-functional delivery over multiple roles.'
+    title: 'Collaboration',
+    value: 100,
+    suffix: '%',
+    description: 'Worked closely with teammates, shared ideas clearly, and supported smooth delivery across projects.'
   }
 ];
+
+interface AchievementsProps {
+  onNavigateToProjects?: () => void;
+}
 
 const schoolAchievements = [
   {
@@ -73,18 +81,6 @@ const schoolAchievements = [
     details:
       'Recognized for taking initiative in organizing student group work, supporting classmates, and helping event teams keep tasks aligned and on schedule.',
     highlights: ['Team coordination', 'Volunteer support', 'Reliable execution']
-  },
-  {
-    id: 'lanyard-5',
-    title: 'Hackathon Participation Award',
-    subtitle: 'Built a working prototype during a limited-time campus event.',
-    year: '2022',
-    tag: 'Hackathon',
-    accentFrom: '#fb7185',
-    accentTo: '#4c0519',
-    details:
-      'Completed a prototype with teammates during a school hackathon, focusing on quick iteration, interface polish, and demo-ready presentation.',
-    highlights: ['Prototype shipped', 'Team collaboration', 'Demo completed']
   },
   {
     id: 'lanyard-6',
@@ -148,10 +144,23 @@ const schoolAchievements = [
   }
 ];
 
-export const Achievements: React.FC = () => {
+export const Achievements: React.FC<AchievementsProps> = ({ onNavigateToProjects }) => {
   const [selectedLanyardId, setSelectedLanyardId] = React.useState<string | null>(null);
+  const [countCycle, setCountCycle] = React.useState(0);
+  const sectionRef = React.useRef<HTMLElement | null>(null);
   const selectedLanyard =
     schoolAchievements.find((achievement) => achievement.id === selectedLanyardId) ?? null;
+  const isAchievementsInView = useInView(sectionRef, {
+    once: false,
+    amount: 0.3,
+    margin: '0px 0px -10% 0px'
+  });
+
+  React.useEffect(() => {
+    if (isAchievementsInView) {
+      setCountCycle((current) => current + 1);
+    }
+  }, [isAchievementsInView]);
 
   React.useEffect(() => {
     if (!selectedLanyard) {
@@ -176,7 +185,10 @@ export const Achievements: React.FC = () => {
   }, [selectedLanyard]);
 
   return (
-    <section className="relative overflow-hidden bg-[#050816] py-24 transition-colors duration-300">
+    <section
+      ref={sectionRef}
+      className="relative overflow-hidden bg-[#050816] py-24 transition-colors duration-300"
+    >
       <div className="absolute inset-0 z-0">
         <Particles
           className="opacity-80"
@@ -229,6 +241,7 @@ export const Achievements: React.FC = () => {
         <div className="grid gap-6 md:grid-cols-3">
           {achievements.map((achievement, index) => {
             const Icon = achievement.icon;
+            const isProjectsCard = achievement.action === 'projects';
 
             return (
               <motion.article
@@ -237,7 +250,24 @@ export const Achievements: React.FC = () => {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.45, delay: index * 0.08 }}
-                className="rounded-3xl border border-white/10 bg-white/8 p-8 shadow-[0_20px_70px_rgba(0,0,0,0.24)] backdrop-blur-xl"
+                onClick={isProjectsCard ? onNavigateToProjects : undefined}
+                onKeyDown={
+                  isProjectsCard
+                    ? (event) => {
+                        if (event.key === 'Enter' || event.key === ' ') {
+                          event.preventDefault();
+                          onNavigateToProjects?.();
+                        }
+                      }
+                    : undefined
+                }
+                tabIndex={isProjectsCard ? 0 : -1}
+                role={isProjectsCard ? 'button' : undefined}
+                className={`rounded-3xl border border-white/10 bg-white/8 p-8 shadow-[0_20px_70px_rgba(0,0,0,0.24)] backdrop-blur-xl ${
+                  isProjectsCard
+                    ? 'cursor-pointer transition duration-300 hover:bg-white/12 focus:outline-none focus:ring-2 focus:ring-cyan-200/60'
+                    : ''
+                }`}
               >
                 <div className="mb-6 flex h-14 w-14 items-center justify-center rounded-2xl border border-white/12 bg-white/10">
                   <Icon className="h-6 w-6 text-white" />
@@ -245,7 +275,18 @@ export const Achievements: React.FC = () => {
                 <p className="mb-3 text-sm font-bold uppercase tracking-[0.18em] text-cyan-100/70">
                   {achievement.title}
                 </p>
-                <p className="mb-4 text-4xl font-bold text-white">{achievement.value}</p>
+                <div className="mb-4 flex items-end gap-1 text-4xl font-bold text-white">
+                  <div key={`${achievement.title}-${countCycle}`}>
+                    <CountUp
+                      from={0}
+                      to={achievement.value}
+                      duration={1.6}
+                      startWhen={isAchievementsInView}
+                      className="tabular-nums"
+                    />
+                  </div>
+                  {achievement.suffix ? <span>{achievement.suffix}</span> : null}
+                </div>
                 <p className="text-base leading-relaxed text-slate-300/82">
                   {achievement.description}
                 </p>
@@ -285,7 +326,7 @@ export const Achievements: React.FC = () => {
                 School Achievements
               </p>
               <h3 className="text-3xl font-bold tracking-tight text-white">
-                Ten sample lanyards for awards, milestones, and campus highlights.
+                Nine sample lanyards for awards, milestones, and campus highlights.
               </h3>
             </motion.div>
 

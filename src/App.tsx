@@ -306,7 +306,7 @@ export default function App() {
           viewport={{ once: true, amount: 0.22 }}
           custom={0.17}
         >
-          <Achievements />
+          <Achievements onNavigateToProjects={() => navigateToSection('projects')} />
         </motion.div>
 
         <motion.div

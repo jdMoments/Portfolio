@@ -71,7 +71,7 @@ export const Hero: React.FC<HeroProps> = ({ onViewProjects, transitionProgress =
 
                 <div className="ml-0 flex space-x-3 sm:ml-4">
                   <a
-                    href="https://github.com/jdMoments"
+                    href="https://github.com/JholmerDamayo"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="rounded-full border border-white/18 bg-white/8 p-4 text-gray-200 transition-colors hover:border-white/30 hover:text-white"

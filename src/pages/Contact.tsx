@@ -84,7 +84,7 @@ export const Contact: React.FC = () => {
                   <Mail className="h-6 w-6 text-white" />
                 </div>
                 <h4 className="mb-1 font-bold text-white">Email</h4>
-                <p className="text-sm text-slate-300/78">hello@example.com</p>
+                <p className="text-sm text-slate-300/78">damayojholmer@gmail.com</p>
               </div>
               
               <div className="rounded-2xl border border-white/12 bg-white/8 p-6 shadow-[0_20px_60px_rgba(0,0,0,0.24)] backdrop-blur-xl">

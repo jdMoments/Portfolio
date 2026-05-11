@@ -1,36 +1,55 @@
 import React from 'react';
 import { Github, Linkedin, Facebook, Mail, Code2 } from 'lucide-react';
+import Particles from './Particles';
 
 export const Footer: React.FC = () => {
   return (
-    <footer className="bg-white dark:bg-neutral-950 border-t border-gray-100 dark:border-neutral-800 pt-16 pb-8 transition-colors duration-300">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <footer className="relative overflow-hidden bg-[#050816] pt-16 pb-8 transition-colors duration-300">
+      <div className="absolute inset-0 z-0">
+        <Particles
+          className="opacity-80"
+          particleColors={['#ffffff', '#8cc8ff', '#7df9d1', '#c7b6ff']}
+          particleCount={180}
+          particleSpread={9}
+          speed={0.08}
+          particleBaseSize={92}
+          moveParticlesOnHover={true}
+          particleHoverFactor={0.18}
+          alphaParticles={true}
+          sizeRandomness={0.75}
+          cameraDistance={18}
+          pixelRatio={1}
+        />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(125,249,209,0.12),transparent_26%),radial-gradient(circle_at_80%_22%,rgba(140,200,255,0.12),transparent_24%),linear-gradient(180deg,rgba(3,7,18,0.78),rgba(5,8,22,0.94))]" />
+      </div>
+
+      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-16">
           <div className="col-span-1 md:col-span-2">
             <div className="flex items-center space-x-2 mb-6">
-              <Code2 className="w-8 h-8 text-black dark:text-white" />
-              <span className="font-bold text-xl tracking-tight dark:text-white">DEV.PORTFOLIO</span>
+              <Code2 className="w-8 h-8 text-white" />
+              <span className="font-bold text-xl tracking-tight text-white">DEV.PORTFOLIO</span>
             </div>
-            <p className="text-gray-500 dark:text-neutral-400 max-w-sm leading-relaxed">
+            <p className="max-w-sm leading-relaxed text-slate-300/82">
               Crafting high-quality software solutions with a focus on user experience, performance, and scalability. Let's build something amazing together.
             </p>
           </div>
           
           <div>
-            <h4 className="font-bold text-sm uppercase tracking-widest mb-6 dark:text-white">Connect</h4>
+            <h4 className="mb-6 text-sm font-bold uppercase tracking-widest text-white">Connect</h4>
             <ul className="space-y-4">
               <li>
-                <a href="https://github.com/jdMoments" target="_blank" rel="noopener noreferrer" className="text-gray-500 dark:text-neutral-400 hover:text-black dark:hover:text-white transition-colors flex items-center">
+                <a href="https://github.com/jdMoments" target="_blank" rel="noopener noreferrer" className="flex items-center text-slate-300/82 transition-colors hover:text-white">
                   <Github className="w-4 h-4 mr-2" /> GitHub
                 </a>
               </li>
               <li>
-                <a href="https://www.linkedin.com/in/jholmer-damayo-10a603295/" target="_blank" rel="noopener noreferrer" className="text-gray-500 dark:text-neutral-400 hover:text-black dark:hover:text-white transition-colors flex items-center">
+                <a href="https://www.linkedin.com/in/jholmer-damayo-10a603295/" target="_blank" rel="noopener noreferrer" className="flex items-center text-slate-300/82 transition-colors hover:text-white">
                   <Linkedin className="w-4 h-4 mr-2" /> LinkedIn
                 </a>
               </li>
               <li>
-                <a href="https://www.facebook.com/jholmerrrr" target="_blank" rel="noopener noreferrer" className="text-gray-500 dark:text-neutral-400 hover:text-black dark:hover:text-white transition-colors flex items-center">
+                <a href="https://www.facebook.com/jholmerrrr" target="_blank" rel="noopener noreferrer" className="flex items-center text-slate-300/82 transition-colors hover:text-white">
                   <Facebook className="w-4 h-4 mr-2" /> Facebook
                 </a>
               </li>
@@ -38,25 +57,25 @@ export const Footer: React.FC = () => {
           </div>
           
           <div>
-            <h4 className="font-bold text-sm uppercase tracking-widest mb-6 dark:text-white">Contact</h4>
+            <h4 className="mb-6 text-sm font-bold uppercase tracking-widest text-white">Contact</h4>
             <ul className="space-y-4">
               <li>
-                <a href="mailto:hello@example.com" className="text-gray-500 dark:text-neutral-400 hover:text-black dark:hover:text-white transition-colors flex items-center">
-                  <Mail className="w-4 h-4 mr-2" /> hello@example.com
+                <a href="mailto:damayojholmer@gmail.com" className="flex items-center text-slate-300/82 transition-colors hover:text-white">
+                  <Mail className="w-4 h-4 mr-2" /> damayojholmer@gmail.com
                 </a>
               </li>
-              <li className="text-gray-500 dark:text-neutral-400">
+              <li className="text-slate-300/82">
                 San Francisco, CA
               </li>
             </ul>
           </div>
         </div>
         
-        <div className="pt-8 border-t border-gray-50 dark:border-neutral-900 flex flex-col md:row justify-between items-center text-sm text-gray-400 dark:text-neutral-500">
+        <div className="flex flex-col items-center justify-between border-t border-white/10 pt-8 text-sm text-slate-400 md:flex-row">
           <p>© {new Date().getFullYear()} Dev Portfolio. All rights reserved.</p>
           <div className="flex space-x-6 mt-4 md:mt-0">
-            <a href="#" className="hover:text-black dark:hover:text-white transition-colors">Privacy Policy</a>
-            <a href="#" className="hover:text-black dark:hover:text-white transition-colors">Terms of Service</a>
+            <a href="#" className="transition-colors hover:text-white">Privacy Policy</a>
+            <a href="#" className="transition-colors hover:text-white">Terms of Service</a>
           </div>
         </div>
       </div>
