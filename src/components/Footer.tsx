@@ -65,7 +65,7 @@ export const Footer: React.FC = () => {
                 </a>
               </li>
               <li className="text-slate-300/82">
-                San Francisco, CA
+                Philippine, Umapad Mandaue City
               </li>
             </ul>
           </div>

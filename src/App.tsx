@@ -244,7 +244,7 @@ export default function App() {
   const projectsScale = 1;
 
   return (
-    <div className="min-h-screen bg-white dark:bg-neutral-950 font-sans text-gray-900 dark:text-neutral-100 selection:bg-black dark:selection:bg-white selection:text-white dark:selection:text-black transition-colors duration-300">
+    <div className="min-h-screen bg-[#02030a] dark:bg-neutral-950 font-sans text-gray-900 dark:text-neutral-100 selection:bg-black dark:selection:bg-white selection:text-white dark:selection:text-black transition-colors duration-300">
       {showLoadingScreen && (
         <LoadingScreen isReady={isStartupReady} progress={startupProgress} />
       )}
@@ -275,7 +275,7 @@ export default function App() {
           <div
             id="projects"
             ref={projectsSectionRef}
-            className="relative z-10 bg-white dark:bg-neutral-950"
+            className="relative z-10 bg-[#02030a] dark:bg-neutral-950"
             style={{
               opacity: projectsOpacity,
               transform: `translate3d(0, ${projectsTranslateY}px, 0) scale(${projectsScale})`,
@@ -320,19 +320,21 @@ export default function App() {
           <About />
         </motion.div>
 
-        <motion.div
-          id="contact"
-          variants={sectionReveal}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, amount: 0.22 }}
-          custom={0.2}
-        >
-          <Contact />
-        </motion.div>
-      </main>
+        <div className="relative overflow-hidden bg-[#040412]">
+          <motion.div
+            id="contact"
+            variants={sectionReveal}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, amount: 0.22 }}
+            custom={0.2}
+          >
+            <Contact />
+          </motion.div>
 
-      <Footer />
+          <Footer />
+        </div>
+      </main>
     </div>
   );
 }

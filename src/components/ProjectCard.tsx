@@ -2,6 +2,7 @@ import React from 'react';
 import { Project } from '../types';
 import { ExternalLink, Github } from 'lucide-react';
 import { motion } from 'motion/react';
+import GlareHover from './GlareHover';
 
 interface ProjectCardProps {
   project: Project;
@@ -87,19 +88,33 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
             : { duration: 0.2 }
         }
       >
-        <motion.img
-          src={project.image}
-          alt={project.title}
-          className="object-cover w-full h-full"
-          animate={isPendingSelection ? { scale: [1, 0.94, 0.82] } : { scale: 1 }}
-          transition={isPendingSelection ? { duration: 0.22 } : { duration: 0.2 }}
-          referrerPolicy="no-referrer"
-        />
-        <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/80 via-black/35 to-transparent px-5 py-4">
-          <h3 className="text-xl font-bold text-white transition-colors">
-            {project.title}
-          </h3>
-        </div>
+        <GlareHover
+          width="100%"
+          height="100%"
+          background="#050816"
+          borderRadius="0px"
+          borderColor="transparent"
+          glareColor="#ffffff"
+          glareOpacity={0.28}
+          glareAngle={-32}
+          glareSize={320}
+          transitionDuration={850}
+          className="h-full w-full"
+          style={{
+            backgroundImage: `url(${project.image})`,
+            backgroundSize: 'cover',
+            backgroundPosition: project.backgroundPosition ?? 'center',
+            backgroundRepeat: 'no-repeat'
+          }}
+        >
+          <div className="relative h-full w-full">
+            <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/80 via-black/35 to-transparent px-5 py-4">
+              <h3 className="text-xl font-bold text-white transition-colors">
+                {project.title}
+              </h3>
+            </div>
+          </div>
+        </GlareHover>
       </motion.div>
 
       <div className="p-6 flex flex-col flex-grow">
