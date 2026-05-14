@@ -23,7 +23,7 @@ export const projects: Project[] = [
     description: 'WisEnergy is a smart energy monitoring platform that uses IoT devices and AI to track appliance electricity consumption in real time. The system helps users reduce electricity bills through reports, analytics, and smart recommendations. Developing this project required major effort in hardware integration, backend development, mobile app design, testing, and real-time data synchronization.',
     image: wisenergyProjectImage,
     backgroundPosition: '72% center',
-    deployedUrl: 'https://example.com',
+    deployedUrl: 'https://wisenergy.site/',
     technologies: ['React Native', 'React', 'Tailwind CSS', 'C', 'Python', 'Firebase'],
     role: 'Frontend/Quality Assurance',
   },
